@@ -16,8 +16,10 @@ import java.util.Date;
 @Accessors(chain = true)    //添加链式调用
 public class announcement<String> {
     @TableId(value = "announcement_id",type = IdType.AUTO)
-    private int announcement_id;
+    private int inform_id;
     private String title;
-    private String announcement_essay;
+    private String essay;
     private Date date;
+    private  String author;
+    private  int inform_check;
 }

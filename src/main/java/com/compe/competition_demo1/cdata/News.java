@@ -18,7 +18,8 @@ public class News<String> {
     @TableId(value = "news_id",type = IdType.AUTO)
     private int news_id;
     private String title;
-    private String news_essay;
-    private String news_author;
+    private String essay;
+    private String author;
     private Date date;
+    private int news_check;
 }
