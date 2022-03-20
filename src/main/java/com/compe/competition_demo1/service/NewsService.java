@@ -1,7 +1,6 @@
 package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.News;
-import com.compe.competition_demo1.cdata.announcement;
 
 import java.sql.SQLException;
 import java.util.List;
