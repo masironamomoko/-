@@ -1,6 +1,6 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.announcement;
+import com.compe.competition_demo1.cdata.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,27 +13,16 @@ import java.util.List;
 public class announcementServicelmpt implements announcementService{
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Override
-    public int informTotalDate(String date) {
-        String sql="SELECT count(*) FROM announcement WHERE ( datediff ( date , '"+date+"' ) = 0 )";
-        return jdbcTemplate.queryForObject(sql,Integer.class);
-    }
 
     @Override
-    public int informTotalKey(String key) {
-        String sql="SELECT count(*) FROM announcement where title like '%"+key+"%'";
-        return jdbcTemplate.queryForObject(sql,Integer.class);
-    }
-
-    @Override
-    public int addAnnounce(announcement ann){
-        String sql="insert into announcement(inform_id,date,essay,title,author,inform_check) values(null,?,?,?,?,0)";
-        jdbcTemplate.update(sql,ann.getDate(),ann.getEssay(),ann.getTitle(),ann.getAuthor());
-        sql="select count(*) from announcement where title='"+ann.getTitle()+"'";
+    public int addAnnounce(inform_add_in ann){
+        String sql="insert into announcement(inform_id,date,essay,title,author,inform_check) values(null,null,?,?,?,0)";
+        jdbcTemplate.update(sql,ann.getEssay(),ann.getTitle(),ann.getAuthor());
+        sql="select count(*) from announcement where title='"+ann.getTitle()+"' and author='"+ann.getAuthor()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
-            return 0;
-        return 1;//成功add时，返回1，jsonresult接收到数据会返回666，否则未接受到数据返回700
+            return 700;
+        return 666;//成功add时，返回666，否则未接受到数据返回700
     }
 
     @Override
@@ -43,25 +32,29 @@ public class announcementServicelmpt implements announcementService{
         sql="select count(*) from announcement where inform_id='"+inform_id+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=0)
-            return 0;
-        return 1;
+            return 700;
+        return 666;
     }
 
     @Override
-    public int updateAnnounce(announcement ann) {
-        String sql="update announcement set title=?, essay=?, date=? where inform_id=?";
-        jdbcTemplate.update(sql,ann.getTitle(),ann.getEssay(),ann.getDate(),ann.getInform_id());
+    public int updateAnnounce(inform_update_in ann) {
+        String sql="update announcement set title=?, essay=? where inform_id=?";
+        jdbcTemplate.update(sql,ann.getTitle(),ann.getEssay(),ann.getInform_id());
         sql="select count(*) from announcement where inform_id='"+ann.getInform_id()+"' and title='"+ann.getTitle()+"' and essay='"+ann.getEssay()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
-            return 0;
-        return 1;
+            return 700;
+        return 666;
     }
 
     @Override
-    public List<announcement> announceFindAll(int pageNum, int pageSize) throws SQLException {
+    public inform_list_out announceFindAll(int pageNum, int pageSize) throws SQLException {
         String sql="select * from announcement order by inform_id desc limit ?,?";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize);
+        inform_list_out informListOut=new inform_list_out();
+        informListOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize));
+        sql="select count(*) from announcement";
+        informListOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
+        return informListOut;
     }
 
     @Override
@@ -71,23 +64,34 @@ public class announcementServicelmpt implements announcementService{
     }
 
     @Override
-    public List<announcement> informKeySearch(int pageNum, int pageSize, String key) throws SQLException {
+    public inform_list_out informKeySearch(int pageNum, int pageSize, String key) throws SQLException {
         String sql="select inform_id,date,author,title from announcement where title like '%"+key+"%' order by inform_id desc limit ?,?";
-        informTotalKey(key);
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize);
+        inform_list_out informkOut=new inform_list_out();
+        informkOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize));
+        sql="select count(*) from announcement where title like '%"+key+"%'";
+        informkOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
+        return informkOut;
     }
 
     @Override
-    public List<announcement> informDateSearch(int pageNum, int pageSize, String date) throws SQLException{
+    public inform_list_out informDateSearch(int pageNum, int pageSize, String date) throws SQLException{
         String sql="SELECT inform_id,date,author,title FROM announcement WHERE ( datediff ( date , '"+date+"' ) = 0 ) order by inform_id desc limit ?,?";
-        informTotalDate(date);
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize);
+        inform_list_out informdOut=new inform_list_out();
+        informdOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class),(pageNum-1)*pageSize,pageNum*pageSize));
+        sql="SELECT count(*) FROM announcement WHERE ( datediff ( date , '"+date+"' ) = 0 )";
+        informdOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
+        return informdOut;
     }
 
     @Override
-    public announcement informIdSearch(String id) throws SQLException {
+    public inform_id_out informIdSearch(String id) throws SQLException {
         String sql="select inform_id,date,author,title from announcement where inform_id='"+id+"'";
-        return jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<announcement>(announcement.class));
+        inform_id_out informIdOut=new inform_id_out();
+        informIdOut.setAnn(jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<announcement>(announcement.class)));
+        if(informIdOut.getAnn()!=null)
+            informIdOut.setCode(666);
+        else informIdOut.setCode(700);
+        return informIdOut;
     }
 
     @Override
@@ -121,7 +125,7 @@ public class announcementServicelmpt implements announcementService{
         sql="select count(*) from announcement where inform_check='"+check+"' and inform_id='"+inform_id+"'";
         int success=jdbcTemplate.queryForObject(sql,Integer.class);
         if(success!=1)
-            return 0;
-        return 1;
+            return 700;
+        return 666;
     }
 }

@@ -1,10 +1,7 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.JsonResult;
-import com.compe.competition_demo1.cdata.News;
-import com.compe.competition_demo1.cdata.announcement;
+import com.compe.competition_demo1.cdata.*;
 import com.compe.competition_demo1.service.NewsService;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,22 +17,22 @@ public class Newscontroller {
     @Autowired
     @Resource private NewsService service;
     @RequestMapping(value = "add")
-    public JsonResult<Integer> addNews(@RequestBody News news, HttpServletResponse response){
-        return new JsonResult<>(service.addNews(news));
+    public int addNews(@RequestBody news_add_in news, HttpServletResponse response){
+        return service.addNews(news);
     }
 
     @GetMapping(value = "delete")
-    public JsonResult<Integer> deleteNews(String news_id){
-        return new JsonResult<>(service.deleteNews(news_id));
+    public int deleteNews(String news_id){
+        return service.deleteNews(news_id);
     }
 
     @RequestMapping(value = "update")
-    public JsonResult<Integer> updateNews(@RequestBody News news, HttpServletResponse response) {
-        return new JsonResult<>(service.updateNews(news));
+    public int updateNews(@RequestBody news_update_in news, HttpServletResponse response) {
+        return service.updateNews(news);
     }
 
     @RequestMapping(value = "findall")
-    public List<News> findAllNews(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
+    public news_list_out findAllNews(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
         return service.NewsFindAll(pageNum,pageSize);
     }
 
@@ -45,18 +42,18 @@ public class Newscontroller {
     }
 
     @RequestMapping(value="keysearch")
-    public List<News> keySearchNews(int pageNum, int pageSize, String key, HttpServletResponse response) throws SQLException {
-        return service.NewsKeySearch(pageNum,pageSize,key);
+    public news_list_out keySearchNews(@RequestBody news_key_in news, HttpServletResponse response) throws SQLException {
+        return service.NewsKeySearch(news);
     }
 
     @RequestMapping(value="datesearch")
-    public List<News> dateSearchNews(int pageNum, int pageSize, String date, HttpServletResponse response) throws SQLException {
-        return service.NewsDateSearch(pageNum,pageSize,date);
+    public news_list_out dateSearchNews(@RequestBody news_date_in news, HttpServletResponse response) throws SQLException {
+        return service.NewsDateSearch(news);
     }
 
     @RequestMapping(value="idsearch")
-    public JsonResult<News> idSearchNews(String id, HttpServletResponse response) throws SQLException {
-        return new JsonResult<>(service.NewsIdSearch(id));
+    public news_id_out idSearchNews(String id, HttpServletResponse response) throws SQLException {
+        return service.NewsIdSearch(id);
     }
 
     @RequestMapping(value="userfind_nopass")
@@ -80,8 +77,8 @@ public class Newscontroller {
     }
 
     @RequestMapping(value ="control")
-    public JsonResult<Integer> ControlNews(int news_id,int check)throws SQLException{
-        return new JsonResult<>(service.NewsControl(news_id,check));
+    public int ControlNews(int news_id,int check)throws SQLException{
+        return service.NewsControl(news_id,check);
     }
 }
 

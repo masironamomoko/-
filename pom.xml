@@ -67,6 +67,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.35</version>
         </dependency>
+        <dependency>
+            <groupId>com.compe</groupId>
+            <artifactId>competition_demo1</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,7 +1,7 @@
 package com.compe.competition_demo1.controller;
 
 import com.compe.competition_demo1.JsonResult;
-import com.compe.competition_demo1.cdata.announcement;
+import com.compe.competition_demo1.cdata.*;
 import com.compe.competition_demo1.service.announcementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
@@ -17,24 +18,24 @@ import java.util.List;
 @RequestMapping("/inform")
 public class announcementController {
     @Autowired
-    private announcementService service;
+    @Resource private announcementService service;
     @RequestMapping(value = "add")
-    public JsonResult<Integer> addAnnounce(@RequestBody announcement ann, HttpServletResponse response){
-        return new JsonResult<>(service.addAnnounce(ann));
+    public int addAnnounce(@RequestBody inform_add_in ann, HttpServletResponse response){
+        return service.addAnnounce(ann);
     }
 
     @GetMapping(value = "delete")
-    public JsonResult<Integer> deleteAnnounce(String inform_id){
-        return new JsonResult<>(service.deleteAnnounce(inform_id));
+    public int deleteAnnounce(String inform_id){
+        return service.deleteAnnounce(inform_id);
     }
 
     @RequestMapping(value = "update")
-    public JsonResult<Integer> updateAnnounce(@RequestBody announcement ann, HttpServletResponse response) {
-        return new JsonResult<>(service.updateAnnounce(ann));
+    public int updateAnnounce(@RequestBody inform_update_in ann, HttpServletResponse response) {
+        return service.updateAnnounce(ann);
     }
 
     @RequestMapping(value = "findall")
-    public List<announcement> findAllAnnounce(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
+    public inform_list_out findAllAnnounce(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
         return service.announceFindAll(pageNum,pageSize);
     }
 
@@ -44,18 +45,18 @@ public class announcementController {
     }
 
     @RequestMapping(value="keysearch")
-    public List<announcement> keySearchInform(int pageNum, int pageSize, String key, HttpServletResponse response) throws SQLException {
+    public inform_list_out keySearchInform(int pageNum, int pageSize, String key, HttpServletResponse response) throws SQLException {
         return service.informKeySearch(pageNum,pageSize,key);
     }
 
     @RequestMapping(value="datesearch")
-    public List<announcement> dateSearchInform(int pageNum, int pageSize, String date, HttpServletResponse response) throws SQLException {
+    public inform_list_out dateSearchInform(int pageNum, int pageSize, String date, HttpServletResponse response) throws SQLException {
         return service.informDateSearch(pageNum,pageSize,date);
     }
 
     @RequestMapping(value="idsearch")
-    public JsonResult<announcement> idSearchInform(String id, HttpServletResponse response) throws SQLException {
-        return new JsonResult<>(service.informIdSearch(id));
+    public inform_id_out idSearchInform(String id, HttpServletResponse response) throws SQLException {
+        return service.informIdSearch(id);
     }
 
     @RequestMapping(value="userfind_nopass")
@@ -79,7 +80,7 @@ public class announcementController {
     }
 
     @RequestMapping(value ="control")
-    public JsonResult<Integer> ControlNews(int inform_id,int check)throws SQLException{
-        return new JsonResult<>(service.InformControl(inform_id,check));
+    public int ControlNews(int inform_id,int check)throws SQLException{
+        return service.InformControl(inform_id,check);
     }
 }

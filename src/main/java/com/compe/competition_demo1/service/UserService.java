@@ -1,14 +1,15 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.User;
+
+import com.compe.competition_demo1.cdata.*;
 
 /*用户类User的功能接口*/
 public interface UserService {
-    public int LoginUser(User user);//用户登录
-    public int registerUser(User user);         //用户注册
-    public int changeUser_basic(User user);  //用户修改基本信息
-    public int changeUser_password(User user);
+    public login_out LoginUser(userLogin user_login);//用户登录
+    public register_out registerUser(userRegister user_register);         //用户注册
+    public chabasic_out changeUser_basic(userChabasic user_chabasic);  //用户修改基本信息
+    public chapass_out changeUser_password(userChapass user_chapass);
     public void admin_import(User user);  //管理员批量导入
-    public int identity(User user);    //修改用户身份
+    public identity_out identity(userIdentity user_identity);    //修改用户身份
 }
 

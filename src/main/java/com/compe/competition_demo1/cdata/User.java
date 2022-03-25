@@ -16,8 +16,8 @@ import lombok.experimental.Accessors;
 public class User {
     //成员变量区
     @TableId(value = "user_id",type = IdType.AUTO)
-    private int user_id;           //用户id
-    private int user_identity;     //用户身份
+    private Integer user_id;           //用户id
+    private Integer user_identity;     //用户身份
     private String user_name;      //用户名
     private String user_password;  //用户密码
     private String user_email;     //用户邮箱

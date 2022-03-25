@@ -1,9 +1,8 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.cdata.User;
+import com.compe.competition_demo1.cdata.*;
 import com.compe.competition_demo1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -16,30 +15,29 @@ public class UserController {
     @Autowired
     @Resource
     private UserService service;
-    private JdbcTemplate jdbcTemplate;
 
     //登录
     @RequestMapping(value = "login")
-    public int LoginUser(User user, HttpServletResponse response) throws SQLException {
-        return service.LoginUser(user);
+    public login_out LoginUser(@RequestBody userLogin user_login, HttpServletResponse response) throws SQLException {
+        return service.LoginUser(user_login);
     }
 
     //注册
     @RequestMapping(value = "register")
-    public int registerUser(User user, HttpServletResponse response)throws SQLException{
-        return service.registerUser(user);
+    public register_out registerUser(@RequestBody userRegister user_register, HttpServletResponse response)throws SQLException{
+        return service.registerUser(user_register);
     }
 
     //修改用户基本信息
     @RequestMapping(value = "chabasic")
-    public int changeUser_basic(User user, HttpServletResponse response) throws SQLException {
-        return service.changeUser_basic(user);
+    public chabasic_out changeUser_basic(@RequestBody userChabasic user_chabasic, HttpServletResponse response) throws SQLException {
+        return service.changeUser_basic(user_chabasic);
     }
 
     //修改密码
     @RequestMapping(value = "chapass")
-    public int changeUser_password(User user, HttpServletResponse response) throws SQLException {
-        return service.changeUser_password(user);
+    public chapass_out changeUser_password(@RequestBody userChapass user_chapass, HttpServletResponse response) throws SQLException {
+        return service.changeUser_password(user_chapass);
     }
 
     @GetMapping(value = "bulkimport")  //管理员批量导入
@@ -48,7 +46,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "identity")  //身份认证
-    public int identity(User user){
-        return service.identity(user);
+    public identity_out identity(@RequestBody userIdentity user_identity, HttpServletResponse response){
+        return service.identity(user_identity);
     }
 }

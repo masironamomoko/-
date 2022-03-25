@@ -1,21 +1,19 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.News;
+import com.compe.competition_demo1.cdata.*;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface NewsService {
-    int NewsTotalDate(String date);
-    int NewsTotalKey(String key);
-    int addNews(News news);
+    int addNews(news_add_in news);
     int deleteNews(String news_id);
-    int updateNews(News news);
-    List<News> NewsFindAll(int pageNum,int pageSize) throws SQLException;
+    int updateNews(news_update_in news);
+    news_list_out NewsFindAll(int pageNum, int pageSize) throws SQLException;
     List<News> NewsInquire() throws SQLException;
-    List<News> NewsKeySearch(int pageNum, int pageSize, String key) throws SQLException;
-    List<News> NewsDateSearch(int pageNum, int pageSize, String date) throws SQLException;
-    News NewsIdSearch(String id) throws SQLException;
+    news_list_out NewsKeySearch(news_key_in news) throws SQLException;
+    news_list_out NewsDateSearch(news_date_in news) throws SQLException;
+    news_id_out NewsIdSearch(String id) throws SQLException;
     List<News> NewsNoPassSearch(String user_id) throws SQLException;
     List<News> NewsPassSearch(String user_id) throws SQLException;
     List<News> NewsConnopassSearch()throws SQLException;
