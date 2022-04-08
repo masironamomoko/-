@@ -1,6 +1,7 @@
 package com.compe.competition_demo1.controller;
 
 import com.compe.competition_demo1.cdata.*;
+import com.compe.competition_demo1.cdata.news_io.*;
 import com.compe.competition_demo1.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 
@@ -22,8 +24,9 @@ public class Newscontroller {
     }
 
     @GetMapping(value = "delete")
-    public int deleteNews(String news_id){
-        return service.deleteNews(news_id);
+    public int deleteAnnounce(@RequestBody Map<String,Object> param){
+        Integer id=Integer.parseInt(param.get("news_id").toString());
+        return service.deleteNews(id);
     }
 
     @RequestMapping(value = "update")
@@ -32,8 +35,8 @@ public class Newscontroller {
     }
 
     @RequestMapping(value = "findall")
-    public news_list_out findAllNews(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
-        return service.NewsFindAll(pageNum,pageSize);
+    public news_list_out findAllNews(@RequestBody news_findall_in newsFindallIn) throws SQLException {
+        return service.NewsFindAll(newsFindallIn);
     }
 
     @RequestMapping(value="leader")
@@ -52,17 +55,20 @@ public class Newscontroller {
     }
 
     @RequestMapping(value="idsearch")
-    public news_id_out idSearchNews(String id, HttpServletResponse response) throws SQLException {
+    public news_id_out idSearchNews(@RequestBody Map<String,Object> param) throws SQLException {
+        Integer id=Integer.parseInt(param.get("news_id").toString());
         return service.NewsIdSearch(id);
     }
 
     @RequestMapping(value="userfind_nopass")
-    public List<News> SearchNoPassNews(String user_id,HttpServletResponse response)throws SQLException{
+    public List<News> SearchNoPassNews(@RequestBody Map<String,Object> param)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.NewsNoPassSearch(user_id);
     }
 
     @RequestMapping(value="userfind_pass")
-    public List<News> SearchPassNews(String user_id,HttpServletResponse response)throws SQLException{
+    public List<News> SearchPassNews(@RequestBody Map<String,Object> param)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.NewsPassSearch(user_id);
     }
 
@@ -77,8 +83,8 @@ public class Newscontroller {
     }
 
     @RequestMapping(value ="control")
-    public int ControlNews(int news_id,int check)throws SQLException{
-        return service.NewsControl(news_id,check);
+    public int ControlNews(news_check_in newsCheckIn)throws SQLException{
+        return service.NewsControl(newsCheckIn);
     }
 }
 

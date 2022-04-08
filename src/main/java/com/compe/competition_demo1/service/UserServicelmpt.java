@@ -1,6 +1,8 @@
 package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.*;
+import com.compe.competition_demo1.cdata.user_io.identity_out;
+import com.compe.competition_demo1.cdata.user_io.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,42 +18,46 @@ public class UserServicelmpt implements UserService {
     public login_out LoginUser(userLogin user_login) {
         String user_in = user_login.getUser_in();
         login_out log = new login_out();
-        //判断是用户名还是手机号的正则表达式
-        String ph = "^((13[0-9])|(15[^4,\\\\D])|(17[0-9])|(18[0,5-9]))\\\\d{8}$";
-        if (user_in.matches(ph)) {  //手机号登陆
-            String sql1 = "select * from user where user_phone='"+user_login.getUser_in()+"' and user_password='"+user_login.getUser_password()+"'";
-            User user1=jdbcTemplate.queryForObject(sql1,new BeanPropertyRowMapper<User>(User.class));
-            if(user1==null)
-                log.setCode(700);
-            else
-                log.setCode(666);
+//        //判断是用户名还是手机号的正则表达式
+//        String ph = "^((13[0-9])|(15[^4,\\\\D])|(17[0-9])|(18[0,5-9]))\\\\d{8}$";
+//        String ph;
+        String sql="select count(*) from user where user_phone='"+user_login.getUser_in()+"' and user_password='"+user_login.getUser_password()+"'";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count!=0) {
+            String sql1 = "select * from user where user_phone='" + user_login.getUser_in() + "' and user_password='" + user_login.getUser_password() + "'";
+            User user1 = jdbcTemplate.queryForObject(sql1, new BeanPropertyRowMapper<User>(User.class));
+            log.setCode(666);
             log.setUser(user1);
+            return log;
         }
-        else {  //用户名登陆
+        sql="select count(*) from user where user_name='"+user_login.getUser_in()+"' and user_password='"+user_login.getUser_password()+"'";
+        count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count!=0) {  //用户名登陆
             String sql2 = "select * from user where user_name='"+user_login.getUser_in()+"' and user_password='"+user_login.getUser_password()+"'";
             User user2=jdbcTemplate.queryForObject(sql2,new BeanPropertyRowMapper<User>(User.class));
-            if(user2==null)
-                log.setCode(700);
-            else
-                log.setCode(666);
+            log.setCode(666);
             log.setUser(user2);
+            return log;
         }
+        log.setCode(700);
         return log;
     }
 
     //注册
     @Override
-    public register_out registerUser(userRegister user_register) {
-        register_out reg = new register_out();
-        String sql="insert into user(user_name,user_password,user_phone) values(?,?,?)";
-        jdbcTemplate.update(sql,user_register.getUser_name(),user_register.getUser_password(),user_register.getUser_phone());
+    public int registerUser(userRegister user_re) {
+        String sql="select count(*) from user where user_phone='"+user_re.getUser_phone()+"'";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count!=0)
+            return 700;
+        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,1)";
+        jdbcTemplate.update(sql,user_re.getUser_name(),user_re.getUser_password(),user_re.getUser_phone());
+        sql="select count(*) from user where user_name='"+user_re.getUser_name()+"' and user_phone='"+user_re.getUser_phone()+"'";
         User user = jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<User>(User.class));
         if(user==null)
-            reg.setCode(700);
+            return 700;
         else
-            reg.setCode(666);
-        reg.setUser(user);
-        return reg;
+            return 666;
     }
 
     //修改用户基本信息

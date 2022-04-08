@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.cdata;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
@@ -20,6 +21,7 @@ public class News<String> {
     private String title;
     private String essay;
     private String author;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private Integer news_check;
 }

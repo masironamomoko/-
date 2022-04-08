@@ -1,7 +1,7 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.JsonResult;
 import com.compe.competition_demo1.cdata.*;
+import com.compe.competition_demo1.cdata.inform_io.*;
 import com.compe.competition_demo1.service.announcementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/inform")
@@ -25,8 +26,9 @@ public class announcementController {
     }
 
     @GetMapping(value = "delete")
-    public int deleteAnnounce(String inform_id){
-        return service.deleteAnnounce(inform_id);
+    public int deleteAnnounce(@RequestBody Map<String,Object> param){
+        Integer id=Integer.parseInt(param.get("inform_id").toString());
+        return service.deleteAnnounce(id);
     }
 
     @RequestMapping(value = "update")
@@ -35,8 +37,8 @@ public class announcementController {
     }
 
     @RequestMapping(value = "findall")
-    public inform_list_out findAllAnnounce(int pageNum, int pageSize, HttpServletResponse response) throws SQLException {
-        return service.announceFindAll(pageNum,pageSize);
+    public inform_list_out findAllAnnounce(@RequestBody inform_findall_in inform, HttpServletResponse response) throws SQLException {
+        return service.announceFindAll(inform);
     }
 
     @RequestMapping(value="leader")
@@ -45,27 +47,30 @@ public class announcementController {
     }
 
     @RequestMapping(value="keysearch")
-    public inform_list_out keySearchInform(int pageNum, int pageSize, String key, HttpServletResponse response) throws SQLException {
-        return service.informKeySearch(pageNum,pageSize,key);
+    public inform_list_out keySearchInform(@RequestBody inform_key_in informKeyIn, HttpServletResponse response) throws SQLException {
+        return service.informKeySearch(informKeyIn);
     }
 
     @RequestMapping(value="datesearch")
-    public inform_list_out dateSearchInform(int pageNum, int pageSize, String date, HttpServletResponse response) throws SQLException {
-        return service.informDateSearch(pageNum,pageSize,date);
+    public inform_list_out dateSearchInform(@RequestBody inform_date_in informDateIn, HttpServletResponse response) throws SQLException {
+        return service.informDateSearch(informDateIn);
     }
 
     @RequestMapping(value="idsearch")
-    public inform_id_out idSearchInform(String id, HttpServletResponse response) throws SQLException {
+    public inform_id_out idSearchNews(@RequestBody Map<String,Object> param) throws SQLException {
+        Integer id=Integer.parseInt(param.get("inform_id").toString());
         return service.informIdSearch(id);
     }
 
     @RequestMapping(value="userfind_nopass")
-    public List<announcement> SearchNoPass(String user_id,HttpServletResponse response)throws SQLException{
+    public List<announcement> SearchNoPass(@RequestBody Map<String,Object> param)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.InformNoPassSearch(user_id);
     }
 
     @RequestMapping(value="userfind_pass")
-    public List<announcement> SearchPass(String user_id,HttpServletResponse response)throws SQLException{
+    public List<announcement> SearchPass(@RequestBody Map<String,Object> param)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.InformPassSearch(user_id);
     }
 
@@ -80,7 +85,7 @@ public class announcementController {
     }
 
     @RequestMapping(value ="control")
-    public int ControlNews(int inform_id,int check)throws SQLException{
-        return service.InformControl(inform_id,check);
+    public int ControlNews(@RequestBody inform_check_in informCheckIn)throws SQLException{
+        return service.InformControl(informCheckIn);
     }
 }

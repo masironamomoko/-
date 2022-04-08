@@ -1,6 +1,8 @@
 package com.compe.competition_demo1.controller;
 
 import com.compe.competition_demo1.cdata.*;
+import com.compe.competition_demo1.cdata.user_io.identity_out;
+import com.compe.competition_demo1.cdata.user_io.*;
 import com.compe.competition_demo1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class UserController {
 
     //注册
     @RequestMapping(value = "register")
-    public register_out registerUser(@RequestBody userRegister user_register, HttpServletResponse response)throws SQLException{
+    public int registerUser(@RequestBody userRegister user_register, HttpServletResponse response)throws SQLException{
         return service.registerUser(user_register);
     }
 

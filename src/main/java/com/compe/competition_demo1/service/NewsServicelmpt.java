@@ -1,12 +1,15 @@
 package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.*;
+import com.compe.competition_demo1.cdata.news_io.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -16,8 +19,11 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public int addNews(news_add_in news){
-        String sql="insert into news(news_id,date,essay,title,author,news_check) values(null,null,?,?,?,0)";
-        jdbcTemplate.update(sql,news.getEssay(),news.getTitle(),news.getAuthor());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(System.currentTimeMillis());
+        formatter.format(date);
+        String sql="insert into news(news_id,date,essay,title,author,news_check) values(null,?,?,?,?,0)";
+        jdbcTemplate.update(sql,date,news.getEssay(),news.getTitle(),news.getAuthor());
         sql="select count(*) from news where title='"+news.getTitle()+"' and author='"+news.getAuthor()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
@@ -26,7 +32,7 @@ public class NewsServicelmpt implements NewsService{
     }
 
     @Override
-    public int deleteNews(String news_id) {
+    public int deleteNews(Integer news_id) {
         String sql="delete from news where news_id=?";
         jdbcTemplate.update(sql,news_id);
         sql="select count(*) from news where news_id='"+news_id+"'";
@@ -38,8 +44,11 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public int updateNews(news_update_in news) {
-        String sql="update news set title=?, essay=? where news_id=?";
-        jdbcTemplate.update(sql,news.getTitle(),news.getEssay(),news.getNews_id());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(System.currentTimeMillis());
+        formatter.format(date);
+        String sql="update news set title=?, essay=? date=? where news_id=?";
+        jdbcTemplate.update(sql,news.getTitle(),news.getEssay(),news.getNews_id(),date);
         sql="select count(*) from news where news_id='"+news.getNews_id()+"' and title='"+news.getTitle()+"' and essay='"+news.getEssay()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
@@ -48,10 +57,11 @@ public class NewsServicelmpt implements NewsService{
     }
 
     @Override
-    public news_list_out NewsFindAll(int pageNum, int pageSize) throws SQLException {
-        String sql="select * from news order by news_id desc limit ?,?";
+    public news_list_out NewsFindAll(news_findall_in newsFindallIn) throws SQLException {
+        //修改注意，page部分直接写进sql语句
+        String sql="select * from news order by news_id desc limit "+(newsFindallIn.getPageNum()-1)*newsFindallIn.getPageSize()+","+newsFindallIn.getPageNum()*newsFindallIn.getPageSize()+"";
         news_list_out newsOut=new news_list_out();
-        newsOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),(pageNum-1)*pageSize,pageNum*pageSize));
+        newsOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="select count(*) from news";
         newsOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
         return newsOut;
@@ -59,15 +69,15 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public List<News> NewsInquire() throws SQLException {
-        String sql="SELECT news_id,date,title FROM news order by news_id desc limit 0,5";
+        String sql="SELECT news_id,date,title FROM news order by news_id desc limit 0,4";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class));
     }
 
     @Override
     public news_list_out NewsKeySearch(news_key_in news) throws SQLException {
-        String sql="select news_id,date,author,title from news where title like '%"+news.getKey()+"%' order by news_id desc limit ?,?";
+        String sql="select news_id,date,author,title from news where title like '%"+news.getKey()+"%' order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
         news_list_out newskOut=new news_list_out();
-        newskOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),(news.getPageNum()-1)*news.getPageSize(),news.getPageNum()*news.getPageSize()));
+        newskOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="SELECT count(*) FROM news where title like '%"+news.getKey()+"%'";
         newskOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
         return newskOut;
@@ -75,7 +85,7 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_list_out NewsDateSearch(news_date_in news) throws SQLException{
-        String sql="SELECT news_id,date,author,title FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit ?,?";
+        String sql="SELECT news_id,date,author,title FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
         news_list_out newsdOut=new news_list_out();
         newsdOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),(news.getPageNum()-1)*news.getPageSize(),news.getPageNum()*news.getPageSize()));
         sql="SELECT count(*) FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 )";
@@ -84,7 +94,7 @@ public class NewsServicelmpt implements NewsService{
     }
 
     @Override
-    public news_id_out NewsIdSearch(String id) throws SQLException {
+    public news_id_out NewsIdSearch(Integer id) throws SQLException {
         String sql="select news_id,date,author,title from news where news_id='"+id+"'";
         news_id_out newsIdOut=new news_id_out();
         newsIdOut.setNews(jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<News>(News.class)));
@@ -95,13 +105,13 @@ public class NewsServicelmpt implements NewsService{
     }
 
     @Override
-    public List<News> NewsNoPassSearch(String user_id) throws SQLException{
+    public List<News> NewsNoPassSearch(Integer user_id) throws SQLException{
         String sql="select news_id,date,author,title from news where news_check=0 and author =?";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),user_id);
     }
 
     @Override
-    public List<News> NewsPassSearch(String user_id) throws SQLException{
+    public List<News> NewsPassSearch(Integer user_id) throws SQLException{
         String sql="select news_id,date,author,title from news where inform_check!=0 and author=?";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),user_id);
     }
@@ -119,10 +129,10 @@ public class NewsServicelmpt implements NewsService{
     }
 
     @Override
-    public int NewsControl(int news_id, int check) {
+    public int NewsControl(news_check_in newsCheckIn) {
         String sql="update news set news_check=? where news_id=?";
-        jdbcTemplate.update(sql,check,news_id);
-        sql="select count(*) from news where news_check='"+check+"' and news_id='"+news_id+"'";
+        jdbcTemplate.update(sql,newsCheckIn.getCheck(),newsCheckIn.getNews_id());
+        sql="select count(*) from news where news_check='"+newsCheckIn.getCheck()+"' and news_id='"+newsCheckIn.getNews_id()+"'";
         int success=jdbcTemplate.queryForObject(sql,Integer.class);
         if(success!=1)
             return 700;
