@@ -1,5 +1,7 @@
 package com.compe.competition_demo1.cdata;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)    //添加链式调用
 
 public class registration_management {
+    @TableId(value = "registration_id",type = IdType.AUTO)
     private Integer user_id;
     private Integer com_id;
     private String declaration;

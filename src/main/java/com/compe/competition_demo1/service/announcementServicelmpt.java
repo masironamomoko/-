@@ -44,11 +44,8 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public int updateAnnounce(inform_update_in ann) {
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date date = new Date(System.currentTimeMillis());
-        formatter.format(date);
-        String sql="update announcement set title=?, essay=? date=? where inform_id=?";
-        jdbcTemplate.update(sql,ann.getTitle(),ann.getEssay(),ann.getInform_id(),date);
+        String sql="update announcement set title=?, essay=? where inform_id=?";
+        jdbcTemplate.update(sql,ann.getTitle(),ann.getEssay(),ann.getInform_id());
         sql="select count(*) from announcement where inform_id='"+ann.getInform_id()+"' and title='"+ann.getTitle()+"' and essay='"+ann.getEssay()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
@@ -94,7 +91,7 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public inform_id_out informIdSearch(Integer id) throws SQLException {
-        String sql="select inform_id,date,author,title from announcement where inform_id='"+id+"'";
+        String sql="select date,title,author,essay from announcement where inform_id='"+id+"'";
         inform_id_out informIdOut=new inform_id_out();
         informIdOut.setAnn(jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<announcement>(announcement.class)));
         if(informIdOut.getAnn()!=null)
@@ -123,7 +120,7 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public List<announcement> InformConpassSearch() throws SQLException {
-        String sql="select inform_id,date,author,title from announcement where inform_check=!0";
+        String sql="select inform_id,date,author,title,inform_check from announcement where inform_check!=0";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class));
     }
 
@@ -131,7 +128,7 @@ public class announcementServicelmpt implements announcementService{
     public int InformControl(inform_check_in informCheckIn) {
         String sql="update announcement set inform_check=? where inform_id=?";
         jdbcTemplate.update(sql,informCheckIn.getCheck(),informCheckIn.getInform_id());
-        sql="select count(*) from announcement where inform_check='"+informCheckIn.getCheck()+"' and inform_id='"+informCheckIn.getCheck()+"'";
+        sql="select count(*) from announcement where inform_check='"+informCheckIn.getCheck()+"' and inform_id='"+informCheckIn.getInform_id()+"'";
         int success=jdbcTemplate.queryForObject(sql,Integer.class);
         if(success!=1)
             return 700;

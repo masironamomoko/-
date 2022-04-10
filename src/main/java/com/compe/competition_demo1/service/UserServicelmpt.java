@@ -50,7 +50,7 @@ public class UserServicelmpt implements UserService {
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=0)
             return 700;
-        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,1)";
+        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(3,?,?,null,?,null,null,1)";
         jdbcTemplate.update(sql,user_re.getUser_name(),user_re.getUser_password(),user_re.getUser_phone());
         sql="select count(*) from user where user_name='"+user_re.getUser_name()+"' and user_phone='"+user_re.getUser_phone()+"'";
         User user = jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<User>(User.class));

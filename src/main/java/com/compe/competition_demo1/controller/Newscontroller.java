@@ -49,7 +49,7 @@ public class Newscontroller {
         return service.NewsKeySearch(news);
     }
 
-    @RequestMapping(value="datesearch")
+    @PostMapping(value="datesearch")
     public news_list_out dateSearchNews(@RequestBody news_date_in news, HttpServletResponse response) throws SQLException {
         return service.NewsDateSearch(news);
     }
@@ -83,7 +83,7 @@ public class Newscontroller {
     }
 
     @RequestMapping(value ="control")
-    public int ControlNews(news_check_in newsCheckIn)throws SQLException{
+    public int ControlNews(@RequestBody news_check_in newsCheckIn)throws SQLException{
         return service.NewsControl(newsCheckIn);
     }
 }

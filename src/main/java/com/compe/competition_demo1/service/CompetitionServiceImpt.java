@@ -1,27 +1,36 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.Competition;
-import com.compe.competition_demo1.cdata.competitions_os.add.addCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.add.addCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.cate.cateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.date.dateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.delete.deleteCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.delete.deleteCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.findall.findallCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.id.idCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.key.keyCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.keyCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.level.levelCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.major.majorCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.update.updateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.update.updateCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.Competition;
+import com.compe.competition_demo1.cdata.competitionsth.cate.cateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.id.idCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom;
+import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom;
+import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom;
+import com.compe.competition_demo1.service.CompetitionService;
+import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.date.dateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.findall.findallCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.hot.hotCom;
+import com.compe.competition_demo1.cdata.competitionsth.hot.hotCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.key.keyCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.keyCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_out;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -32,9 +41,11 @@ public class CompetitionServiceImpt implements CompetitionService {
 
     //热点竞赛
     @Override
-    public List<Competition> Comhot() throws SQLException{
+    public hotCom_out Comhot() throws SQLException{
+        hotCom_out hot = new hotCom_out();
         String sql = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competition order by com_id desc limit 0,5";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Competition>(Competition.class));
+        hot.setData(jdbcTemplate.query(sql, new BeanPropertyRowMapper<hotCom>(hotCom.class)));
+        return hot;
     }
 
     //关键词搜索
@@ -47,7 +58,8 @@ public class CompetitionServiceImpt implements CompetitionService {
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
     }
-    //日期搜索
+
+    //日期搜索,报名时间在这个之后的全部
     @Override
     public keyCom_out dateCom(dateCom_in datecom_in) throws SQLException{
         keyCom_out key = new keyCom_out();
@@ -57,6 +69,8 @@ public class CompetitionServiceImpt implements CompetitionService {
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
     }
+
+    //年份查询，当年全部
 
     //赛事级别
     @Override
@@ -119,8 +133,11 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public addCom_out addCom(addCom_in addcom_in) throws SQLException {
         addCom_out add = new addCom_out();
-        String sql1 = "insert into competition(com_mainname,com_manager,com_subname,com_level,com_major,com_category,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,attachment1,attachment2,attachment3,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null,null,null,null,null,null,null,null,null,null)";
-        jdbcTemplate.update(sql1, addcom_in.getCom_mainname(),addcom_in.getCom_manager(),addcom_in.getCom_subname(),addcom_in.getCom_level(),addcom_in.getCom_major(),addcom_in.getCom_category(),addcom_in.getCom_information(),addcom_in.getSign_up_start(),addcom_in.getSign_up_end(),addcom_in.getPreliminary_start(),addcom_in.getPreliminary_end(),addcom_in.getRepecharge_start(),addcom_in.getRepecharge_end(),addcom_in.getFinals_start(),addcom_in.getFinals_end());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date com_date = new Date(System.currentTimeMillis());
+        formatter.format(com_date);
+        String sql1 = "insert into competition(com_date,com_mainname,com_manager,com_subname,com_level,com_major,com_category,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,attachment1,attachment2,attachment3,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null,null,0,0,0,0,0,0,0,0)";
+        jdbcTemplate.update(sql1, com_date,addcom_in.getCom_mainname(),addcom_in.getCom_manager(),addcom_in.getCom_subname(),addcom_in.getCom_level(),addcom_in.getCom_major(),addcom_in.getCom_category(),addcom_in.getCom_information(),addcom_in.getSign_up_start(),addcom_in.getSign_up_end(),addcom_in.getPreliminary_start(),addcom_in.getPreliminary_end(),addcom_in.getRepecharge_start(),addcom_in.getRepecharge_end(),addcom_in.getFinals_start(),addcom_in.getFinals_end());
         String sql2 = "select count(*) from competition where com_mainname = '"+addcom_in.getCom_mainname()+"'and com_manager = '"+addcom_in.getCom_manager()+"'";
         int count  = jdbcTemplate.queryForObject(sql2,Integer.class);
         if(count==0)
@@ -162,30 +179,38 @@ public class CompetitionServiceImpt implements CompetitionService {
 
     //用竞赛id查询报名信息
     @Override
-    public List<Competition> idsignCom(Integer com_id) throws SQLException {
-        String sql="select user_id,user_name,user_num,user_phone from competition where com_id='"+com_id+"'";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+    public idsignCom_out idsignCom(Integer com_id) throws SQLException {
+        idsignCom_out idsign = new idsignCom_out();
+        String sql="select user_id,user_name,user_num,user_phone from user u left outer join registration_management r on u.user_id = r.user_id where r.com_id='"+com_id+"'";
+        idsign.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<idsignCom>(idsignCom.class)));
+        return idsign;
     }
 
-    //用竞赛id查询获奖信息
+    //用竞赛id查询获奖信息,多表
     @Override
-    public List<Competition> idwardCom(Integer com_id) throws SQLException {
-        String sql="select user_name,user_num,com_id,com_mainname,award from competition where com_id='"+com_id+"'";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+    public idwardCom_out idwardCom(Integer com_id) throws SQLException {
+        idwardCom_out idward = new idwardCom_out();
+        String sql="select user_name,user_num,com_id,com_mainname,award from (user u left outer join registration_management r on u.user_id = r.user_id) left join competition c on r.com_id = c.com_id where com_id='"+com_id+"'";
+        idward.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<idwardCom>(idwardCom.class)));
+        return idward;
     }
 
     //管理员未审核竞赛
     @Override
-    public List<Competition> SearchConnopass() throws SQLException {
+    public searchpassCom_out SearchConnopass() throws SQLException {
+        searchpassCom_out pass = new searchpassCom_out();
         String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check=0";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+        pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class)));
+        return pass;
     }
 
     //管理员已审核竞赛
     @Override
-    public List<Competition> SearchConpass() throws SQLException {
+    public searchpassCom_out SearchConpass() throws SQLException {
+        searchpassCom_out pass = new searchpassCom_out();
         String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check=!0";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+        pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class)));
+        return pass;
     }
 
     //审核竞赛
@@ -202,16 +227,20 @@ public class CompetitionServiceImpt implements CompetitionService {
 
     //查询负责人发布的未审核竞赛
     @Override
-    public List<Competition> searchNoPass(Integer user_id) throws SQLException {
+    public searchpassCom_out searchNoPass(Integer user_id) throws SQLException {
+        searchpassCom_out pass = new searchpassCom_out();
         String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check=0 and com_manager =?";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class),user_id);
+        pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class),user_id));
+        return pass;
     }
 
     //查询负责人发布的已审核竞赛
     @Override
-    public List<Competition> searchPass(Integer user_id) throws SQLException {
+    public searchpassCom_out searchPass(Integer user_id) throws SQLException {
+        searchpassCom_out pass = new searchpassCom_out();
         String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check!=0 and com_manager=?";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class),user_id);
+        pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class),user_id));
+        return pass;
     }
 
     //批量导入报名信息

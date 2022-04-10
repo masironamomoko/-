@@ -13,27 +13,30 @@ import lombok.experimental.Accessors;
 public class award_year_out {
     private Integer allc;
     private Integer allp;
-    private class major{
+    @Data
+    public class major{
         private Integer major1;
         private Integer major2;
         private Integer major3;
     }
-    private class level{
+    @Data
+    public class level{
         private Integer level1;
         private Integer level2;
         private Integer level3;
         private Integer level4;
         private Integer level5;
     }
-    private class category{
+    @Data
+    public class category{
         private Integer category1;
         private Integer category2;
         private Integer category3;
         private Integer category4;
     }
-    private Integer reword1;
-    private Integer reword2;
-    private Integer reword3;
-    private Integer rewordother;
-    private Integer reword0;
+    private Integer award1;
+    private Integer award2;
+    private Integer award3;
+    private Integer awardother;
+    private Integer award0;
 }

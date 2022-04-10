@@ -44,11 +44,8 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public int updateNews(news_update_in news) {
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date date = new Date(System.currentTimeMillis());
-        formatter.format(date);
-        String sql="update news set title=?, essay=? date=? where news_id=?";
-        jdbcTemplate.update(sql,news.getTitle(),news.getEssay(),news.getNews_id(),date);
+        String sql="update news set title=?, essay=? where news_id=?";
+        jdbcTemplate.update(sql,news.getTitle(),news.getEssay(),news.getNews_id());
         sql="select count(*) from news where news_id='"+news.getNews_id()+"' and title='"+news.getTitle()+"' and essay='"+news.getEssay()+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=1)
@@ -59,7 +56,7 @@ public class NewsServicelmpt implements NewsService{
     @Override
     public news_list_out NewsFindAll(news_findall_in newsFindallIn) throws SQLException {
         //修改注意，page部分直接写进sql语句
-        String sql="select * from news order by news_id desc limit "+(newsFindallIn.getPageNum()-1)*newsFindallIn.getPageSize()+","+newsFindallIn.getPageNum()*newsFindallIn.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id order by news_id desc limit "+(newsFindallIn.getPageNum()-1)*newsFindallIn.getPageSize()+","+newsFindallIn.getPageNum()*newsFindallIn.getPageSize()+"";
         news_list_out newsOut=new news_list_out();
         newsOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="select count(*) from news";
@@ -69,13 +66,13 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public List<News> NewsInquire() throws SQLException {
-        String sql="SELECT news_id,date,title FROM news order by news_id desc limit 0,4";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id order by news_id desc limit 0,4";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class));
     }
 
     @Override
     public news_list_out NewsKeySearch(news_key_in news) throws SQLException {
-        String sql="select news_id,date,author,title from news where title like '%"+news.getKey()+"%' order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where title like '%"+news.getKey()+"%' order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
         news_list_out newskOut=new news_list_out();
         newskOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="SELECT count(*) FROM news where title like '%"+news.getKey()+"%'";
@@ -85,9 +82,9 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_list_out NewsDateSearch(news_date_in news) throws SQLException{
-        String sql="SELECT news_id,date,author,title FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
         news_list_out newsdOut=new news_list_out();
-        newsdOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),(news.getPageNum()-1)*news.getPageSize(),news.getPageNum()*news.getPageSize()));
+        newsdOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="SELECT count(*) FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 )";
         newsdOut.setTotal(jdbcTemplate.queryForObject(sql,Integer.class));
         return newsdOut;
@@ -95,9 +92,11 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_id_out NewsIdSearch(Integer id) throws SQLException {
-        String sql="select news_id,date,author,title from news where news_id='"+id+"'";
+        String sql="select date,title,author,essay from news where news_id='"+id+"'";
         news_id_out newsIdOut=new news_id_out();
         newsIdOut.setNews(jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<News>(News.class)));
+        sql="select user_name from user where user_id='"+newsIdOut.news.getAuthor()+"'";
+        newsIdOut.news.setAuthor(jdbcTemplate.queryForObject(sql,String.class));
         if(newsIdOut.getNews()!=null)
             newsIdOut.setCode(666);
         else newsIdOut.setCode(700);
@@ -106,25 +105,25 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public List<News> NewsNoPassSearch(Integer user_id) throws SQLException{
-        String sql="select news_id,date,author,title from news where news_check=0 and author =?";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where news_check=0 and author =?";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),user_id);
     }
 
     @Override
     public List<News> NewsPassSearch(Integer user_id) throws SQLException{
-        String sql="select news_id,date,author,title from news where inform_check!=0 and author=?";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where news_check!=0 and author=?";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class),user_id);
     }
 
     @Override
     public List<News> NewsConnopassSearch() throws SQLException {
-        String sql="select news_id,date,author,title from news where news_check=0";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where news_check=0";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class));
     }
 
     @Override
     public List<News> NewsConpassSearch() throws SQLException {
-        String sql="select news_id,date,author,title from news where news_check=!0";
+        String sql="select news_id,date,title,news_check,user_name from news n1 left join user u1 on n1.author=u1.user_id where news_check!=0";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class));
     }
 

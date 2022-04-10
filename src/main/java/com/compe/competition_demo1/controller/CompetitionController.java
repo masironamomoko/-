@@ -1,21 +1,25 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.cdata.Competition;
-import com.compe.competition_demo1.cdata.competitions_os.add.addCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.add.addCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.cate.cateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.date.dateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.delete.deleteCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.delete.deleteCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.findall.findallCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.id.idCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.key.keyCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.keyCom_out;
-import com.compe.competition_demo1.cdata.competitions_os.level.levelCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.major.majorCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.update.updateCom_in;
-import com.compe.competition_demo1.cdata.competitions_os.update.updateCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.Competition;
+import com.compe.competition_demo1.cdata.competitionsth.cate.cateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.id.idCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.service.CompetitionService;
+import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.date.dateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.findall.findallCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.hot.hotCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.key.keyCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.keyCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_out;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +39,7 @@ public class CompetitionController {
 
     //热点竞赛
     @RequestMapping(value = "hot")
-    public List<Competition> hotCom(HttpServletResponse response)throws SQLException{
+    public hotCom_out hotCom(HttpServletResponse response)throws SQLException{
         return service.Comhot();
     }
 
@@ -99,25 +103,25 @@ public class CompetitionController {
 
     //用竞赛id查询报名信息
     @RequestMapping(value = "idsign")
-    public List<Competition> idsignCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
+    public idsignCom_out idsignCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
         return service.idsignCom(com_id);
     }
 
     //用竞赛id查询获奖信息
     @RequestMapping(value = "idward")
-    public List<Competition> idwardCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
+    public idwardCom_out idwardCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
         return service.idwardCom(com_id);
     }
 
     //管理员未审核竞赛
     @RequestMapping(value = "con_nopass")
-    public List<Competition> SearchConnopass(HttpServletResponse response)throws SQLException{
+    public searchpassCom_out SearchConnopass(HttpServletResponse response)throws SQLException{
         return service.SearchConnopass();
     }
 
     //管理员已审核竞赛
     @RequestMapping(value = "con_pass")
-    public List<Competition> SearchConpass(HttpServletResponse response)throws SQLException{
+    public searchpassCom_out SearchConpass(HttpServletResponse response)throws SQLException{
         return service.SearchConpass();
     }
 
@@ -129,13 +133,13 @@ public class CompetitionController {
 
     //查询负责人发布的未审核竞赛
     @RequestMapping(value = "userfind_nopass")
-    public List<Competition> searchNoPass(Integer user_id,HttpServletResponse response)throws SQLException{
+    public searchpassCom_out searchNoPass(Integer user_id, HttpServletResponse response)throws SQLException{
         return service.searchNoPass(user_id);
     }
 
     //查询负责人发布的已审核竞赛
     @RequestMapping(value = "userfind_pass")
-    public List<Competition> searchPass(Integer user_id,HttpServletResponse response)throws SQLException{
+    public searchpassCom_out searchPass(Integer user_id,HttpServletResponse response)throws SQLException{
         return service.searchPass(user_id);
     }
 

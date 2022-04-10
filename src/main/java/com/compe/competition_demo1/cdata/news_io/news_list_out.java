@@ -13,5 +13,5 @@ import java.util.List;
 @Accessors(chain = true)    //添加链式调用
 public class news_list_out {
     private int total;
-    private List<News> newsList;
+    public List<News> newsList;
 }

@@ -21,7 +21,12 @@ public class News<String> {
     private String title;
     private String essay;
     private String author;
+    private String user_name;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private Integer news_check;
+    public void main(java.lang.String[] args){
+        java.lang.String sql="select user_name from user where user_id='"+author+"'";
+        
+    }
 }

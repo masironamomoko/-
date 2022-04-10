@@ -57,7 +57,7 @@ public class announcementController {
     }
 
     @RequestMapping(value="idsearch")
-    public inform_id_out idSearchNews(@RequestBody Map<String,Object> param) throws SQLException {
+    public inform_id_out idSearchInform(@RequestBody Map<String,Object> param) throws SQLException {
         Integer id=Integer.parseInt(param.get("inform_id").toString());
         return service.informIdSearch(id);
     }
@@ -85,7 +85,7 @@ public class announcementController {
     }
 
     @RequestMapping(value ="control")
-    public int ControlNews(@RequestBody inform_check_in informCheckIn)throws SQLException{
+    public int ControlInform(@RequestBody inform_check_in informCheckIn)throws SQLException{
         return service.InformControl(informCheckIn);
     }
 }
