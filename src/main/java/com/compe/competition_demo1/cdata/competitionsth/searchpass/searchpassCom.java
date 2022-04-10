@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.cdata.competitionsth.searchpass;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.Date;
 
 public class searchpassCom {
     private Integer com_id;
-    @JSONField(pattern="yyyy-MM-dd")
+    @JSONField(format="yyyy-MM-dd")
     private Date com_date;
     private String com_mainname;
     private Integer com_manager;
