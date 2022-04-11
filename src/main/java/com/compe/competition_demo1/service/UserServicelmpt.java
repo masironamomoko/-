@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServicelmpt implements UserService {
     @Autowired
@@ -114,5 +116,11 @@ public class UserServicelmpt implements UserService {
         else
             id.setCode(666);
         return id;
+    }
+
+    @Override
+    public List<User> com() {
+        String sql="select user_id,user_name,user_phone,user_num,user_identity from user";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<User>(User.class));
     }
 }

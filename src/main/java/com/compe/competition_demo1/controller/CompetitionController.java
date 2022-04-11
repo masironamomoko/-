@@ -2,10 +2,14 @@ package com.compe.competition_demo1.controller;
 
 import com.compe.competition_demo1.cdata.competitionsth.Competition;
 import com.compe.competition_demo1.cdata.competitionsth.cate.cateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.control.controlCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.findall.findallCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.id.idCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
 import com.compe.competition_demo1.service.CompetitionService;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
@@ -28,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/com")
@@ -75,13 +80,14 @@ public class CompetitionController {
 
     //竞赛分页展示 按时间排序
     @RequestMapping(value = "findall")
-    public findallCom_out findallCom(Integer pageNum, Integer pageSize, HttpServletResponse response) throws SQLException{
-        return service.findallCom(pageNum,pageSize);
+    public findallCom_out findallCom(@RequestBody findallCom_in findallcom_in, HttpServletResponse response) throws SQLException{
+        return service.findallCom(findallcom_in);
     }
 
     //id搜索
     @RequestMapping(value = "idsearch")
-    public idCom_out idCom(Integer com_id, HttpServletResponse response) throws SQLException {
+    public idCom_out idCom(@RequestBody Map<String,Object> param) throws SQLException {
+        Integer com_id=Integer.parseInt(param.get("com_id").toString());
         return service.idCom(com_id);
     }
 
@@ -103,13 +109,15 @@ public class CompetitionController {
 
     //用竞赛id查询报名信息
     @RequestMapping(value = "idsign")
-    public idsignCom_out idsignCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
+    public idsignCom_out idsignCom(@RequestBody Map<String,Object> param, HttpServletResponse response) throws SQLException{
+        Integer com_id=Integer.parseInt(param.get("com_id").toString());
         return service.idsignCom(com_id);
     }
 
     //用竞赛id查询获奖信息
     @RequestMapping(value = "idward")
-    public idwardCom_out idwardCom(@RequestBody Integer com_id, HttpServletResponse response) throws SQLException{
+    public idwardCom_out idwardCom(@RequestBody Map<String,Object> param, HttpServletResponse response) throws SQLException{
+        Integer com_id=Integer.parseInt(param.get("com_id").toString());
         return service.idwardCom(com_id);
     }
 
@@ -127,19 +135,21 @@ public class CompetitionController {
 
     //审核竞赛
     @RequestMapping(value = "control")
-    public int Control(Integer com_id,Integer com_check, HttpServletResponse response)throws SQLException{
-        return service.Control(com_id,com_check);
+    public int Control(@RequestBody controlCom_in controlcom_in, HttpServletResponse response)throws SQLException{
+        return service.Control(controlcom_in);
     }
 
     //查询负责人发布的未审核竞赛
     @RequestMapping(value = "userfind_nopass")
-    public searchpassCom_out searchNoPass(Integer user_id, HttpServletResponse response)throws SQLException{
+    public searchpassCom_out searchNoPass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.searchNoPass(user_id);
     }
 
     //查询负责人发布的已审核竞赛
     @RequestMapping(value = "userfind_pass")
-    public searchpassCom_out searchPass(Integer user_id,HttpServletResponse response)throws SQLException{
+    public searchpassCom_out searchPass(@RequestBody Map<String,Object> param,HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.searchPass(user_id);
     }
 
@@ -147,12 +157,23 @@ public class CompetitionController {
 
     //用户报名
     @RequestMapping(value = "sign")
-    public int sign(Integer com_id, Integer user_id, HttpServletResponse response) throws SQLException{
-        return service.sign(com_id,user_id);
+    public int sign(@RequestBody signCom_in signcom_in, HttpServletResponse response) throws SQLException{
+        return service.sign(signcom_in);
     }
     //根据时间范围返回竞赛
     @RequestMapping(value = "middate")
-    public List<Competition> middate(Date date1, Date date2, HttpServletResponse response)throws SQLException{
-        return service.middate(date1,date2);
+    public List<Competition> middate(@RequestBody middateCom_in middatecom_in, HttpServletResponse response)throws SQLException{
+        return service.middate(middatecom_in);
+    }
+    //查询学生报名的未完成竞赛
+    @RequestMapping(value="stu_nocomplete")
+    public List<Competition> stu_nocomplete(@RequestBody Map<String,Object> param) throws SQLException {
+        Integer id=Integer.parseInt(param.get("user_id").toString());
+        return service.stu_nocomplete(id);
+    }
+    @RequestMapping(value="stu_complete")
+    public List<Competition> stu_complete(@RequestBody Map<String,Object> param)throws SQLException{
+        Integer id=Integer.parseInt(param.get("user_id").toString());
+        return service.stu_complete(id);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -50,5 +51,9 @@ public class UserController {
     @RequestMapping(value = "identity")  //身份认证
     public identity_out identity(@RequestBody userIdentity user_identity, HttpServletResponse response){
         return service.identity(user_identity);
+    }
+    @RequestMapping(value = "com")
+    public List<User> com(HttpServletResponse response){
+        return service.com();
     }
 }
