@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data   //添加getter/setter
 @NoArgsConstructor     //添加无参构造器
 @AllArgsConstructor     //添加全参构造器
@@ -23,4 +25,5 @@ public class registration_management {
     private String award;
     private String team_name;
     private Integer registration_id;
+    private Date date;
 }

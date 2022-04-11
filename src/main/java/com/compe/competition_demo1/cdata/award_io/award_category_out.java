@@ -9,24 +9,14 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor     //添加无参构造器
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
-public class award_major_out {
+public class award_category_out {
     private Integer allc;
     private Integer allp;
     @Data
-    public class major{
+    public class category{
         @Data
-        public class major1{
-            private String name="计算机科学与技术";
-            private Integer num;  //期间竞赛总数
-            private Integer sign; //期间报名总数
-            private Integer award1; //期间获一等奖数
-            private Integer award2;
-            private Integer award3;
-            private Integer awardOther;
-        }
-        @Data
-        public class major2{
-            private String name="物联网";
+        public class class1{
+            private String name="体育类";
             private Integer num;
             private Integer sign;
             private Integer award1;
@@ -35,8 +25,28 @@ public class award_major_out {
             private Integer awardOther;
         }
         @Data
-        public class major3{
-            private String name="信息安全技术";
+        public class class2{
+            private String name="艺术类";
+            private Integer num;
+            private Integer sign;
+            private Integer award1;
+            private Integer award2;
+            private Integer award3;
+            private Integer awardOther;
+        }
+        @Data
+        public class class3{
+            private String name="科技类";
+            private Integer num;
+            private Integer sign;
+            private Integer award1;
+            private Integer award2;
+            private Integer award3;
+            private Integer awardOther;
+        }
+        @Data
+        public class class4{
+            private String name="电子类";
             private Integer num;
             private Integer sign;
             private Integer award1;

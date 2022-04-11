@@ -52,8 +52,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out keyCom(keyCom_in keycom_in)throws SQLException{
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_mainname like '%"+keycom_in.getKey()+"%'  order by com_id desc limit ?,?";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(keycom_in.getPageNum()-1)*keycom_in.getPageSize(),keycom_in.getPageNum()*keycom_in.getPageSize()));
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_mainname like '%"+keycom_in.getKey()+"%'  order by com_id desc limit "+(keycom_in.getPageNum()-1)*keycom_in.getPageSize()+","+keycom_in.getPageNum()*keycom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_mainname like'%"+keycom_in.getKey()+"%'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -63,8 +63,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out dateCom(dateCom_in datecom_in) throws SQLException{
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_date ='%"+datecom_in.getDate()+"%' between sign_up_start and sign_up_end order by com_id desc limit ?,?";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(datecom_in.getPageNum()-1)*datecom_in.getPageSize(),datecom_in.getPageNum()*datecom_in.getPageSize()));
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_date ='%"+datecom_in.getDate()+"%' between sign_up_start and sign_up_end order by com_id desc limit "+(datecom_in.getPageNum()-1)*datecom_in.getPageSize()+","+datecom_in.getPageNum()*datecom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_date ='%"+datecom_in.getDate()+"%' between sign_up_start and sign_up_end";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -76,8 +76,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out levelCom(levelCom_in levelcom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_level like '%"+levelcom_in.getLevel()+"%'  order by com_id desc limit ?,?";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(levelcom_in.getPageNum()-1)*levelcom_in.getPageSize(),levelcom_in.getPageNum()*levelcom_in.getPageSize()));
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_level like '%"+levelcom_in.getLevel()+"%'  order by com_id desc limit "+(levelcom_in.getPageNum()-1)*levelcom_in.getPageSize()+","+levelcom_in.getPageNum()*levelcom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_level like'%"+levelcom_in.getLevel()+"%'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -87,8 +87,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out majorCom(majorCom_in majorcom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_major like '%"+majorcom_in.getMajor()+"%'  order by com_id desc limit ?,?";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(majorcom_in.getPageNum()-1)*majorcom_in.getPageSize(),majorcom_in.getPageNum()*majorcom_in.getPageSize()));
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_major like '%"+majorcom_in.getMajor()+"%'  order by com_id desc limit "+(majorcom_in.getPageNum()-1)*majorcom_in.getPageSize()+","+majorcom_in.getPageNum()*majorcom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_major like'%"+majorcom_in.getMajor()+"%'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -98,8 +98,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out cateCom(cateCom_in catecom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_category like '%"+catecom_in.getCategory()+"%'  order by com_id desc limit ?,?";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(catecom_in.getPageNum()-1)*catecom_in.getPageSize(),catecom_in.getPageNum()*catecom_in.getPageSize()));
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_category like '%"+catecom_in.getCategory()+"%'  order by com_id desc limit "+(catecom_in.getPageNum()-1)*catecom_in.getPageSize()+","+catecom_in.getPageNum()*catecom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_category like'%"+catecom_in.getCategory()+"%'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -122,7 +122,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public findallCom_out findallCom(Integer pageNum, Integer pageSize) throws SQLException{
         findallCom_out fin = new findallCom_out();
-        String sql1 = "select * from competition order by com_id desc limit ?,?";
+        String sql1 = "select * from competition order by com_id desc limit \"+(keycom_in.getPageNum()-1)*keycom_in.getPageSize()+\",\"+keycom_in.getPageNum()*keycom_in.getPageSize()+\"";
         fin.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class),(pageNum-1)*pageSize,pageNum*pageSize));
         String sql2 = "select count(*) from competition";
         fin.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
@@ -208,7 +208,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public searchpassCom_out SearchConpass() throws SQLException {
         searchpassCom_out pass = new searchpassCom_out();
-        String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check=!0";
+        String sql="select com_id,com_date,com_mainname,com_manager from competition where com_check!=0";
         pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class)));
         return pass;
     }

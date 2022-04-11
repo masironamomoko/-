@@ -37,6 +37,6 @@ public class award_year_out {
     private Integer award1;
     private Integer award2;
     private Integer award3;
-    private Integer awardother;
+    private Integer awardOther;
     private Integer award0;
 }

@@ -11,6 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)    //添加链式调用
 
 public class award_date_in {
-    private String date1;
-    private String date2;
+    private String date1; //开始时间
+    private String date2; //结束时间
 }

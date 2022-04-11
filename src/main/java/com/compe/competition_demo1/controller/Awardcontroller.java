@@ -2,7 +2,7 @@ package com.compe.competition_demo1.controller;
 
 
 import com.compe.competition_demo1.cdata.News;
-import com.compe.competition_demo1.cdata.award_io.award_year_out;
+import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.service.AwardService;
 import com.compe.competition_demo1.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +28,15 @@ public class Awardcontroller {
         return service.AnalysisYear(year);
     }
     @RequestMapping(value="major")
-    public void MajorAnalysis(HttpServletResponse response)throws SQLException{
-        service.AnalysisMajor();
+    public award_major_out MajorAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
+        return service.AnalysisMajor(awardDateIn);
     }
     @RequestMapping(value="category")
-    public void CategoryAnalysis(HttpServletResponse response)throws SQLException{
-        service.AnalysisCategory();
+    public award_category_out CategoryAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
+        return service.AnalysisCategory(awardDateIn);
     }
     @RequestMapping(value="level")
-    public void LevelAnalysis(HttpServletResponse response)throws SQLException{
-        service.AnalysisLevel();
+    public award_level_out LevelAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
+        return service.AnalysisLevel(awardDateIn);
     }
 }
