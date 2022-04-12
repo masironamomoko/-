@@ -19,10 +19,13 @@ import com.compe.competition_demo1.cdata.competitionsth.keyCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.year.yearCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.year.yearCom_out;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.SQLException;
@@ -50,7 +53,8 @@ public interface CompetitionService {
     searchpassCom_out searchPass(Integer user_id)throws SQLException;//查询负责人发布的已审核竞赛
     //批量导入报名信息
     int sign(signCom_in signcom_in) throws SQLException;//用户报名
-    List<Competition> middate(middateCom_in middatecom_in)throws SQLException;//根据时间范围返回竞赛
-    List<Competition> stu_nocomplete(int id)throws SQLException;
+    middateCom_out middate(middateCom_in middatecom_in)throws SQLException;//根据时间范围返回竞赛
+    yearCom_out year(yearCom_in yearcom_in)throws SQLException;
+    List<Competition> stu_nocomplete(int id)throws SQLException; //查询学生报名的未完成竞赛
     List<Competition> stu_complete(int id)throws SQLException;
 }

@@ -66,7 +66,7 @@ public class UserServicelmpt implements UserService {
     @Override
     public chabasic_out changeUser_basic(userChabasic user_chabasic) {
         chabasic_out chb = new chabasic_out();
-        String sql1="update user set user(user_name,user_phone,user_num) values (?,?,?) where user_id ='"+user_chabasic.getUser_id()+"'";
+        String sql1="update user set user(user_name,user_phone,user_num) values (?,?,?) where user_id ="+user_chabasic.getUser_id()+"";
         jdbcTemplate.update(sql1,user_chabasic.getUser_name(),user_chabasic.getUser_phone(),user_chabasic.getUser_num());
         String sql2 = "select count(*) from user where user_name='"+user_chabasic.getUser_name()+"'and user_phone ='"+user_chabasic.getUser_phone()+"'and user_num ='"+user_chabasic.getUser_num()+"'";
         int user = jdbcTemplate.queryForObject(sql2,Integer.class);

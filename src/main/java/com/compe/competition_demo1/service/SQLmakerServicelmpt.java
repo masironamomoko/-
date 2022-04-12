@@ -18,7 +18,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
     @Override
     public void createall() throws SQLException {
         //user,项目管理员
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             // 数据库语句
             StringBuilder sql1 = new StringBuilder(
                     "insert into user(user_identity,user_name,user_password,user_email,user_phone,user_num,user_picture) values('");
@@ -33,7 +33,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             jdbcTemplate.update(String.valueOf(sql1));
         }
         //user,竞赛负责人
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             // 数据库语句
             StringBuilder sql1 = new StringBuilder(
                     "insert into user(user_identity,user_name,user_password,user_email,user_phone,user_num,user_picture) values('");
@@ -48,7 +48,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             jdbcTemplate.update(String.valueOf(sql1));
         }
         //user,学生
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             // 数据库语句
             StringBuilder sql1 = new StringBuilder(
                     "insert into user(user_identity,user_name,user_password,user_email,user_phone,user_num,user_picture) values('");
@@ -63,7 +63,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             jdbcTemplate.update(String.valueOf(sql1));
         }
         //user,注册但为验证身份的用户
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             // 数据库语句
             StringBuilder sql1 = new StringBuilder(
                     "insert into user(user_identity,user_name,user_password,user_email,user_phone,user_num,user_picture) values('");
@@ -79,7 +79,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
         }
 
         //registration
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 20; i++) {
             // 数据库语句
             StringBuilder sql2 = new StringBuilder(
                     "insert into competition(com_date,com_mainname,com_manager,com_subname,com_level,com_major,com_category,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,attachment1,attachment2,attachment3,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check) values('");
@@ -87,7 +87,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             String name3 = randomChar(10);
             sql2.append(randomDate(2020,2022)).append("','")     //发布时间
                     .append(name2).append("','")                 // 竞赛主标题
-                    .append(randomNumStr(1,20)).append("','")   //负责人id
+                    .append(randomNumStr(1,8)).append("','")   //负责人id
                     .append(name2).append("','")                 // 竞赛副标题
                     .append(comlevel()).append("','")            //竞赛级别
                     .append(commajor()).append("','")            //专业
@@ -120,8 +120,8 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             StringBuilder sql3 = new StringBuilder(
                     "insert into registration_management(user_id,com_id,declaration,opening_report,interim_report,closing_report,award,team_name,date) values('");
             String name1 = randomChar(5);
-            sql3.append(randomNumStr(20,120)).append("','")   //user_id
-                    .append(randomNumStr(1,50)).append("','")   //com_id
+            sql3.append(randomNumStr(20,100)).append("','")   //user_id
+                    .append(randomNumStr(1,20)).append("','")   //com_id
                     .append("null").append("','")//申报书
                     .append("null").append("','")//开题
                     .append("null").append("','")//中期
@@ -142,7 +142,7 @@ public class SQLmakerServicelmpt implements SQLmakerService {
             String name2 = randomChar(50);
             sql4.append(name1).append("','")     // 新闻标题
                     .append(name2).append("','")     // 新闻正文
-                    .append(randomNumStr(1,20)).append("','")      //作者id
+                    .append(randomNumStr(1,8)).append("','")      //作者id
                     .append(randomDate(2020,2022)).append("','")       //发布日期
                     .append(randomNumStr(0,2)).append("');\n");             //审核结果
             jdbcTemplate.update(String.valueOf(sql4));
@@ -152,10 +152,10 @@ public class SQLmakerServicelmpt implements SQLmakerService {
         for (int i = 0; i < 50; i++) {
             // 数据库语句
             StringBuilder sql5 = new StringBuilder(
-                    "insert into announcement(auther_id,date,essay,title,inform_check) values('");
+                    "insert into announcement(author,date,essay,title,inform_check) values('");
             String name1 = randomChar(5);
             String name2 = randomChar(50);
-            sql5.append(randomNumStr(1,20)).append("','")      //公告发布者id
+            sql5.append(randomNumStr(1,8)).append("','")      //公告发布者id
                     .append(randomDate(2020,2022)).append("','")       //发布日期
                     .append(name2).append("','")     // 公告正文
                     .append(name1).append("','")     // 公告标题
@@ -176,6 +176,16 @@ public class SQLmakerServicelmpt implements SQLmakerService {
         jdbcTemplate.update(sql9);
         String sql10 = "delete from announcement";
         jdbcTemplate.update(sql10);
+        String sql11 = "alter table user user_id =0";
+        jdbcTemplate.update(sql11);
+        String sql12 = "alter table competition com_id =0";
+        jdbcTemplate.update(sql12);
+        String sql13 = "alter table registration_management registration_id =0";
+        jdbcTemplate.update(sql13);
+        String sql14 = "alter table news news_id =0";
+        jdbcTemplate.update(sql14);
+        String sql15 = "alter table announcement inform_id =0";
+        jdbcTemplate.update(sql15);
     }
 
     /**
