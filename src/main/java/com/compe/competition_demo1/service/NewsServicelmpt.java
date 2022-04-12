@@ -56,7 +56,7 @@ public class NewsServicelmpt implements NewsService{
     @Override
     public news_list_out NewsFindAll(news_findall_in newsFindallIn) throws SQLException {
         //修改注意，page部分直接写进sql语句
-        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id order by news_id desc limit "+(newsFindallIn.getPageNum()-1)*newsFindallIn.getPageSize()+","+newsFindallIn.getPageNum()*newsFindallIn.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id order by news_id desc limit "+(newsFindallIn.getPageNum()-1)*newsFindallIn.getPageSize()+","+newsFindallIn.getPageSize()+"";
         news_list_out newsOut=new news_list_out();
         newsOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="select count(*) from news";
@@ -72,7 +72,7 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_list_out NewsKeySearch(news_key_in news) throws SQLException {
-        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where title like '%"+news.getKey()+"%' order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id where title like '%"+news.getKey()+"%' order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageSize()+"";
         news_list_out newskOut=new news_list_out();
         newskOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="SELECT count(*) FROM news where title like '%"+news.getKey()+"%'";
@@ -82,7 +82,7 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_list_out NewsDateSearch(news_date_in news) throws SQLException{
-        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageNum()*news.getPageSize()+"";
+        String sql="select news_id,date,title,user_name from news n1 left join user u1 on n1.author=u1.user_id WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 ) order by news_id desc limit "+(news.getPageNum()-1)*news.getPageSize()+","+news.getPageSize()+"";
         news_list_out newsdOut=new news_list_out();
         newsdOut.setNewsList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<News>(News.class)));
         sql="SELECT count(*) FROM news WHERE ( datediff ( date , '"+news.getDate()+"' ) = 0 )";
