@@ -9,6 +9,7 @@ import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
 import com.compe.competition_demo1.service.CompetitionService;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
@@ -162,7 +163,7 @@ public class CompetitionController {
     }
     //根据时间范围返回竞赛
     @RequestMapping(value = "middate")
-    public List<Competition> middate(@RequestBody middateCom_in middatecom_in, HttpServletResponse response)throws SQLException{
+    public middateCom_out middate(@RequestBody middateCom_in middatecom_in, HttpServletResponse response)throws SQLException{
         return service.middate(middatecom_in);
     }
     //查询学生报名的未完成竞赛
