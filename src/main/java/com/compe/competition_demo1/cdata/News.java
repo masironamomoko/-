@@ -25,8 +25,4 @@ public class News<String> {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private Integer news_check;
-    public void main(java.lang.String[] args){
-        java.lang.String sql="select user_name from user where user_id='"+author+"'";
-        
-    }
 }

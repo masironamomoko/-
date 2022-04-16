@@ -27,13 +27,21 @@ public class Competition<String>{
     private String com_major;             //专业
     private String com_category;          //竞赛类别
     private String com_information;
+    @JSONField(format = "yyyy-MM-dd")
     private Date sign_up_start;         //报名开始时间
+    @JSONField(format = "yyyy-MM-dd")
     private Date sign_up_end;
+    @JSONField(format = "yyyy-MM-dd")
     private Date preliminary_start;     //初赛开始时间
+    @JSONField(format = "yyyy-MM-dd")
     private Date preliminary_end;
+    @JSONField(format = "yyyy-MM-dd")
     private Date repecharge_start;      //复赛开始时间
+    @JSONField(format = "yyyy-MM-dd")
     private Date repecharge_end;
+    @JSONField(format = "yyyy-MM-dd")
     private Date finals_start;          //决赛开始时间
+    @JSONField(format = "yyyy-MM-dd")
     private Date finals_end;
     private String attachment1;         //附件1
     private String attachment2;

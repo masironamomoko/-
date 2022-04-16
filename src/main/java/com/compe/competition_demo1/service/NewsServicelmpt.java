@@ -92,11 +92,9 @@ public class NewsServicelmpt implements NewsService{
 
     @Override
     public news_id_out NewsIdSearch(Integer id) throws SQLException {
-        String sql="select date,title,author,essay from news where news_id='"+id+"'";
+        String sql="select date,title,user_name,essay from news n left join user u on n.author=u.user_id where news_id='"+id+"'";
         news_id_out newsIdOut=new news_id_out();
         newsIdOut.setNews(jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<News>(News.class)));
-        sql="select user_name from user where user_id='"+newsIdOut.news.getAuthor()+"'";
-        newsIdOut.news.setAuthor(jdbcTemplate.queryForObject(sql,String.class));
         if(newsIdOut.getNews()!=null)
             newsIdOut.setCode(666);
         else newsIdOut.setCode(700);

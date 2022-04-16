@@ -73,7 +73,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out dateCom(dateCom_in datecom_in) throws SQLException{
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end order by com_id desc limit "+(datecom_in.getPageNum()-1)*datecom_in.getPageSize()+","+datecom_in.getPageSize()+"";
+        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competition where com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end order by com_id desc limit "+(datecom_in.getPageNum()-1)*datecom_in.getPageSize()+","+datecom_in.getPageSize()+"";
         key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition where com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));

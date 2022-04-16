@@ -6,6 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import com.compe.competition_demo1.cdata.award_io.award_year_out.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class AwardServicelmpt implements AwardService{
@@ -106,7 +113,7 @@ public class AwardServicelmpt implements AwardService{
         m3.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
         sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
         m3.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        return awardMajorOut;
+        return (awardMajorOut);
     }
 
     @Override
@@ -246,5 +253,77 @@ public class AwardServicelmpt implements AwardService{
         sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
         l5.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
         return awardLevelOut;
+    }
+
+    @Override
+    public int AddAward(award_add_in awardAddIn) {
+        Integer format = awardAddIn.getUser_id();
+        // File folder = new File(realPath + format);
+
+        File folder=new File("D:/图片/"+format);
+        if (!folder.isDirectory())
+        {
+            if (!folder.mkdirs())
+            {
+                return 700;
+            }
+        }
+        String oldName = awardAddIn.getAward_prove().getOriginalFilename();
+        assert oldName != null;
+        String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."));
+        try
+        {
+            awardAddIn.getAward_prove().transferTo(new File(folder, newName));
+            //以上都是普通代码, 这里的/files/ 对应的就是你在WebMvcConfig设置的地址映射
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        String path="D:/图片/"+format+"/"+newName;
+        String sql="select cate_id from category where cate_name='"+awardAddIn.getCate_name()+"'";
+        Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+awardAddIn.getCom_num()+"'";
+        Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="insert into award(award_id,user_id,award_check,award_prove,com_id,award_level) values(null,?,0,?,?,?)";
+        jdbcTemplate.update(sql,awardAddIn.getUser_id(),path,com_id,awardAddIn.getAward_level());
+        sql="select count(*) from award where user_id='"+awardAddIn.getUser_id()+"' and award_prove='"+path+"' and com_id='"+com_id+"' and award_level='"+awardAddIn.getAward_level()+"'";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count==1)
+            return 666;
+        return 700;
+    }
+
+    @Override
+    public int DeleteAward(Integer id) {
+        String sql="delete from award where award_id=?";
+        jdbcTemplate.update(sql,id);
+        sql="select count(*) from award where award_id='"+id+"'";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count!=0)
+            return 700;
+        return 666;
+    }
+
+    @Override
+    public int UpdateAward(award_update_in awardUpdateIn) {
+        String sql="select cate_id from category where cate_name='"+awardUpdateIn.getCate_name()+"'";
+        Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+awardUpdateIn.getCom_num()+"'";
+        Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="update award set com_id=?, award_level=?, award_prove=? where award_id=?";
+        jdbcTemplate.update(sql,com_id,awardUpdateIn.getAward_level(),awardUpdateIn.getAward_prove(),awardUpdateIn.getAward_id());
+        sql="select count(*) from award where award_prove='"+awardUpdateIn.getAward_prove()+"' and com_id='"+com_id+"' and award_level='"+awardUpdateIn.getAward_level()+"'";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count==1)
+            return 666;
+        return 700;
+    }
+
+    @Override
+    public award_idsearch_out IdSearch(Integer id) {
+        String sql="select * from award where award_id='"+id+"'";
+        award_idsearch_out awardIdsearchOut=new award_idsearch_out();
+        awardIdsearchOut=jdbcTemplate.queryForObject(sql,award_idsearch_out.class);
+        return awardIdsearchOut;
     }
 }
