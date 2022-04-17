@@ -2,16 +2,21 @@ package com.compe.competition_demo1.service;
 
 
 import com.compe.competition_demo1.cdata.award_io.*;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.FileItemFactory;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import com.compe.competition_demo1.cdata.award_io.award_year_out.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Base64;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -257,9 +262,8 @@ public class AwardServicelmpt implements AwardService{
 
     @Override
     public int AddAward(award_add_in awardAddIn) {
-        Integer format = awardAddIn.getUser_id();
+        String format = awardAddIn.getCate_name()+awardAddIn.getCom_num()+ awardAddIn.getUser_id();
         // File folder = new File(realPath + format);
-
         File folder=new File("D:/图片/"+format);
         if (!folder.isDirectory())
         {
@@ -280,7 +284,11 @@ public class AwardServicelmpt implements AwardService{
             e.printStackTrace();
         }
         String path="D:/图片/"+format+"/"+newName;
-        String sql="select cate_id from category where cate_name='"+awardAddIn.getCate_name()+"'";
+        String sql="select count(*) from award where award_prove='"+path+"'";
+        int n=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(n!=0)
+            return 701;
+        sql="select cate_id from category where cate_name='"+awardAddIn.getCate_name()+"'";
         Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
         sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+awardAddIn.getCom_num()+"'";
         Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
@@ -295,7 +303,13 @@ public class AwardServicelmpt implements AwardService{
 
     @Override
     public int DeleteAward(Integer id) {
-        String sql="delete from award where award_id=?";
+        String sql="select award_prove from award where award_id='"+id+"'";
+        String path=jdbcTemplate.queryForObject(sql,String.class);
+        File file=new File(path);
+        boolean OK=file.exists();
+        if(OK)
+            file.delete();
+        sql="delete from award where award_id=?";
         jdbcTemplate.update(sql,id);
         sql="select count(*) from award where award_id='"+id+"'";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
@@ -305,25 +319,80 @@ public class AwardServicelmpt implements AwardService{
     }
 
     @Override
-    public int UpdateAward(award_update_in awardUpdateIn) {
-        String sql="select cate_id from category where cate_name='"+awardUpdateIn.getCate_name()+"'";
-        Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
-        sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+awardUpdateIn.getCom_num()+"'";
-        Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
-        sql="update award set com_id=?, award_level=?, award_prove=? where award_id=?";
-        jdbcTemplate.update(sql,com_id,awardUpdateIn.getAward_level(),awardUpdateIn.getAward_prove(),awardUpdateIn.getAward_id());
-        sql="select count(*) from award where award_prove='"+awardUpdateIn.getAward_prove()+"' and com_id='"+com_id+"' and award_level='"+awardUpdateIn.getAward_level()+"'";
-        int count=jdbcTemplate.queryForObject(sql,Integer.class);
-        if(count==1)
-            return 666;
-        return 700;
-    }
-
-    @Override
     public award_idsearch_out IdSearch(Integer id) {
         String sql="select * from award where award_id='"+id+"'";
-        award_idsearch_out awardIdsearchOut=new award_idsearch_out();
+        award_idsearch_out awardIdsearchOut;
         awardIdsearchOut=jdbcTemplate.queryForObject(sql,award_idsearch_out.class);
+        sql="select award_prove from award where award_id="+id+"";
+        String path=jdbcTemplate.queryForObject(sql,String.class);
+        String base=getBaseImg(path);
+        awardIdsearchOut.setAward_prove(base);
         return awardIdsearchOut;
     }
+    /**
+     * 将图片base64转码
+     *
+     * @param imgPath 图片路径
+     * @return base64编码
+     */
+    public String getBaseImg(String imgPath) {
+        InputStream in;
+        byte[] data = null;
+        try {
+            in = new FileInputStream(imgPath);
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //进行Base64编码
+        Base64.Encoder encoder = Base64.getEncoder();
+        return encoder.encodeToString(data);
+    }
+
+    //学生的未审核获奖
+    public List<award_stunopass_out> awastunopass(Integer user_id){
+        String sql = "select award_id,com_cate,com_num,award_level from award a left join competition c on a.com_id = c.com_id where a.user_id = "+user_id+"";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_stunopass_out>(award_stunopass_out.class));
+    }
+
+    public List<award_stupass_out> awastupass(Integer user_id){
+        String sql = "select award_id,com_cate,com_num,award_level,award_check from award a left join competition c on a.com_id = c.com_id where a.user_id = "+user_id+"";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_stupass_out>(award_stupass_out.class));
+    }
+
+    //竞赛负责人的未审核获奖
+    public List<award_mannopass_out> awamannopass(Integer user_id) {
+        String sql = "select award_id,user_name,user_num,user_phone,com_cate,com_num,award_level from (award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id where a.user_id = "+user_id+"";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_mannopass_out>(award_mannopass_out.class));
+    }
+
+    public List<award_manpass_out> awamanpass(Integer user_id) {
+        String sql = "select award_id,user_name,user_num,user_phone,com_cate,com_num,award_level,award_check from (award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id where a.user_id = "+user_id+"";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
+    }
+
+    //项目管理员的未审核获奖
+    public List<award_mannopass_out> awaconnopass(){
+        String sql = "select award_id,user_name,user_num,user_phone,com_cate,com_num,award_level from (award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_mannopass_out>(award_mannopass_out.class));
+    }
+
+    public List<award_manpass_out> awaconpass(){
+        String sql = "select award_id,user_name,user_num,user_phone,com_cate,com_num,award_level,award_check from (award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
+    }
+
+    //审核获奖信息
+    public int awacheck(award_check_in award_check_in){
+        String sql1 = "update award set award_check = ? where award_id = ?";
+        jdbcTemplate.update(sql1,award_check_in.getAward_check(),award_check_in.getAward_id());
+        String sql2 = "select count(*) from award where award_check ="+award_check_in.getAward_check()+"award_id ="+award_check_in.getAward_id()+"";
+        int count=jdbcTemplate.queryForObject(sql2,Integer.class);
+        if(count!=1)
+            return 700;
+        return 666;
+    }
+
 }
