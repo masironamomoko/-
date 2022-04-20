@@ -45,7 +45,7 @@ public class Awardcontroller {
     }
     @RequestMapping(value="add",method=RequestMethod.POST)
     @ResponseBody
-    public int add(HttpServletResponse req){
+    public int add(HttpServletRequest req){
         MultipartHttpServletRequest params=((MultipartHttpServletRequest) req);
         MultipartFile file=((MultipartHttpServletRequest) req).getFile("award_prove");
         award_add_in awardAddIn=new award_add_in();
@@ -105,5 +105,24 @@ public class Awardcontroller {
     @RequestMapping(value = "check")
     public int awacheck(award_check_in award_check_in,HttpServletResponse response){
         return service.awacheck(award_check_in);
+    }
+
+    //学生的未审核获奖个数
+    @RequestMapping(value="stu_count")
+    public int StuCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StuCount(user_id);
+    }
+    //竞赛负责人的未审核获奖个数
+    @RequestMapping(value="man_count")
+    public int ManCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.ManCount(user_id);
+    }
+    //所有的未审核获奖个数
+    @RequestMapping(value = "con_count")
+    public int ConCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.ConCount(user_id);
     }
 }

@@ -19,4 +19,7 @@ public interface AwardService {
     List<award_mannopass_out> awaconnopass();//项目管理员的未审核获奖
     List<award_manpass_out> awaconpass();
     int awacheck(award_check_in award_check_in);//审核获奖信息
+    int StuCount(Integer user_id);
+    int ManCount(Integer user_id);
+    int ConCount(Integer user_id);
 }
