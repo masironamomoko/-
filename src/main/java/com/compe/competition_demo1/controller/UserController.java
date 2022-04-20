@@ -43,7 +43,7 @@ public class UserController {
         return service.changeUser_password(user_chapass);
     }
 
-    @GetMapping(value = "bulkimport")  //管理员批量导入
+    @RequestMapping(value = "bulkimport")  //管理员批量导入
     public void admin_import(@RequestBody User user){
         service.admin_import(user);
     }

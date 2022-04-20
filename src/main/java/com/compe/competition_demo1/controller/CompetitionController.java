@@ -93,12 +93,12 @@ public class CompetitionController {
     }
 
     //发布竞赛
-    @PostMapping(value = "add")
+    @RequestMapping(value = "add")
     public addCom_out addCom(@RequestBody addCom_in addcom_in, HttpServletResponse response)throws SQLException{
         return service.addCom(addcom_in);
     }
 
-    @GetMapping(value = "delete")    //删除竞赛
+    @RequestMapping(value = "delete")    //删除竞赛
     public deleteCom_out deleteCom(@RequestBody deleteCom_in deletecom_in, HttpServletResponse response)throws SQLException{
         return service.deleteCom(deletecom_in);
     }

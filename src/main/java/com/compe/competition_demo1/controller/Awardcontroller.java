@@ -56,7 +56,7 @@ public class Awardcontroller {
         awardAddIn.setUser_id(Integer.valueOf(params.getParameter("user_id")));
         return service.AddAward(awardAddIn);
     }
-    @GetMapping(value="delete")
+    @RequestMapping(value="delete")
     public int delete(@RequestBody Map<String,Object> param){
         Integer id=Integer.parseInt(param.get("award_id").toString());
         return service.DeleteAward(id);
@@ -77,6 +77,11 @@ public class Awardcontroller {
     public List<award_stupass_out> awastupass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
         Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.awastupass(user_id);
+    }
+    @RequestMapping(value="stu_nonopass")
+    public List<award_stupass_out> awastunonopass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.awastunonopass(user_id);
     }
 
     //竞赛负责人的未审核获奖
@@ -121,8 +126,7 @@ public class Awardcontroller {
     }
     //所有的未审核获奖个数
     @RequestMapping(value = "con_count")
-    public int ConCount(@RequestBody Map<String,Object> param){
-        Integer user_id=Integer.parseInt(param.get("user_id").toString());
-        return service.ConCount(user_id);
+    public int ConCount(){
+        return service.ConCount();
     }
 }

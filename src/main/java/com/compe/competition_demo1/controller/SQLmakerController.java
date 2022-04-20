@@ -25,7 +25,7 @@ public class SQLmakerController {
     }
 
     //清除所有数据
-    @GetMapping(value = "deleteall")
+    @RequestMapping(value = "deleteall")
     public void deleteall(HttpServletResponse response)throws SQLException {
         service.deleteall();
     }

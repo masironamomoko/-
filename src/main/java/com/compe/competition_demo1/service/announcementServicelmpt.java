@@ -55,7 +55,7 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public inform_list_out announceFindAll(inform_findall_in inform) throws SQLException {
-        String sql="select * from announcement order by inform_id desc limit "+(inform.getPageNum()-1)*inform.getPageSize()+","+inform.getPageSize()+"";
+        String sql="select * from announcement where inform_check=1 order by inform_id desc limit "+(inform.getPageNum()-1)*inform.getPageSize()+","+inform.getPageSize()+"";
         inform_list_out informListOut=new inform_list_out();
         informListOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class)));
         sql="select count(*) from announcement";
@@ -65,13 +65,13 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public List<announcement> informInquire() throws SQLException {
-        String sql="SELECT inform_id,date,title FROM announcement order by inform_id desc limit 0,5";
+        String sql="SELECT inform_id,date,title FROM announcement where inform_check=1 order by inform_id desc limit 0,5";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class));
     }
 
     @Override
     public inform_list_out informKeySearch(inform_key_in informKeyIn) throws SQLException {
-        String sql="select inform_id,date,author,title from announcement where title like '%"+informKeyIn.getKey()+"%' order by inform_id desc limit "+(informKeyIn.getPageNum()-1)*informKeyIn.getPageSize()+","+informKeyIn.getPageSize()+"";
+        String sql="select inform_id,date,author,title from announcement where inform_check=1 and title like '%"+informKeyIn.getKey()+"%' order by inform_id desc limit "+(informKeyIn.getPageNum()-1)*informKeyIn.getPageSize()+","+informKeyIn.getPageSize()+"";
         inform_list_out informkOut=new inform_list_out();
         informkOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class)));
         sql="select count(*) from announcement where title like '%"+informKeyIn.getKey()+"%'";
@@ -81,7 +81,7 @@ public class announcementServicelmpt implements announcementService{
 
     @Override
     public inform_list_out informDateSearch(inform_date_in informDateIn) throws SQLException{
-        String sql="SELECT inform_id,date,author,title FROM announcement WHERE ( datediff ( date , '"+informDateIn.getDate()+"' ) = 0 ) order by inform_id desc limit "+(informDateIn.getPageNum()-1)*informDateIn.getPageSize()+","+informDateIn.getPageSize()+"";
+        String sql="SELECT inform_id,date,author,title FROM announcement where inform_check=1 and ( datediff ( date , '"+informDateIn.getDate()+"' ) = 0 ) order by inform_id desc limit "+(informDateIn.getPageNum()-1)*informDateIn.getPageSize()+","+informDateIn.getPageSize()+"";
         inform_list_out informdOut=new inform_list_out();
         informdOut.setAnnouncementList(jdbcTemplate.query(sql,new BeanPropertyRowMapper<announcement>(announcement.class)));
         sql="SELECT count(*) FROM announcement WHERE ( datediff ( date , '"+informDateIn.getDate()+"' ) = 0 )";

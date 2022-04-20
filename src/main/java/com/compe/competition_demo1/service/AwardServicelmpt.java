@@ -367,41 +367,39 @@ public class AwardServicelmpt implements AwardService{
 
     //学生的未审核获奖
     public List<award_stunopass_out> awastunopass(Integer user_id){
-        String sql1 = "select count(*)from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = "+user_id+"and a.award_check !=1";
-        int count = jdbcTemplate.queryForObject(sql1,Integer.class);
-        if(count != 0) {
-            String sql2 = "select award_id,cate_name,com_num,award_level from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = " + user_id + "and a.award_check !=1";
-            return jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_stunopass_out>(award_stunopass_out.class));
-        }
-        return null;
+        List<award_stunopass_out> awno;
+        String sql2 = "select award_id,cate_name,com_num,award_level from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = "+user_id+" and a.award_check =0";
+        awno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_stunopass_out>(award_stunopass_out.class));
+        return awno;
     }
-
+    //审核成功
     public List<award_stupass_out> awastupass(Integer user_id){
-        String sql1 = "select count(*) from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = "+user_id+"and a.award_check =1";
-        int count = jdbcTemplate.queryForObject(sql1,Integer.class);
-        if(count != 0) {
-            String sql2 = "select award_id,cate_name,com_num,award_level,award_check from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = " + user_id + "and a.award_check =1";
-            return jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_stupass_out>(award_stupass_out.class));
-        }
-        return null;
+        List<award_stupass_out> aw;
+        String sql2 = "select award_id,cate_name,com_num,award_level,award_check from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = "+user_id+" and a.award_check =1";
+        aw = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_stupass_out>(award_stupass_out.class));
+        return aw;
+    }
+    //审核失败
+    public List<award_stupass_out> awastunonopass(Integer user_id){
+        List<award_stupass_out> aw;
+        String sql2 = "select award_id,cate_name,com_num,award_level,award_check from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = "+user_id+" and a.award_check =2";
+        aw = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_stupass_out>(award_stupass_out.class));
+        return aw;
     }
 
     //竞赛负责人的未审核获奖
     public List<award_mannopass_out> awamannopass(Integer user_id) {
-        List<award_mannopass_out> awardManpassOut;
-        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level from ((award a left join user u on a.user_id = u.user_id) left join competition c on c.com_id = a.com_id) left join category ca on c.cate_id = ca.cate_id where com_manager = "+user_id+" and a.award_check =0";
-        awardManpassOut=jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_mannopass_out>(award_mannopass_out.class));
-        return awardManpassOut;
+        List<award_mannopass_out> awno;
+        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check !=1";
+        awno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_mannopass_out>(award_mannopass_out.class));
+        return awno;
     }
 
     public List<award_manpass_out> awamanpass(Integer user_id) {
-        String sql1 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = "+user_id+"and a.award_check =1";
-        int count = jdbcTemplate.queryForObject(sql1,Integer.class);
-        if(count != 0) {
-            String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = " + user_id + "and a.award_check =1";
-            return jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
-        }
-        return null;
+        List<award_manpass_out> aw;
+        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check =1";
+        aw = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
+        return aw;
     }
 
     //项目管理员的未审核获奖
@@ -452,7 +450,7 @@ public class AwardServicelmpt implements AwardService{
     }
 
     @Override
-    public int ConCount(Integer user_id) {
+    public int ConCount() {
         String sql="select count(*) from award where award_check=0";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;

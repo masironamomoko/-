@@ -25,7 +25,7 @@ public class announcementController {
         return service.addAnnounce(ann);
     }
 
-    @GetMapping(value = "delete")
+    @RequestMapping(value = "delete")
     public int deleteAnnounce(@RequestBody Map<String,Object> param){
         Integer id=Integer.parseInt(param.get("inform_id").toString());
         return service.deleteAnnounce(id);

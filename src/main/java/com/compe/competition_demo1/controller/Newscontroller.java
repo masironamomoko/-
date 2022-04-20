@@ -29,7 +29,7 @@ public class Newscontroller {
         return service.addNews(news);
     }
 
-    @GetMapping(value = "delete")
+    @RequestMapping(value = "delete")
     public int deleteAnnounce(@RequestBody Map<String,Object> param){
         Integer id=Integer.parseInt(param.get("news_id").toString());
         return service.deleteNews(id);
@@ -55,7 +55,7 @@ public class Newscontroller {
         return service.NewsKeySearch(news);
     }
 
-    @PostMapping(value="datesearch")
+    @RequestMapping(value="datesearch")
     public news_list_out dateSearchNews(@RequestBody news_date_in news, HttpServletResponse response) throws SQLException {
         return service.NewsDateSearch(news);
     }
