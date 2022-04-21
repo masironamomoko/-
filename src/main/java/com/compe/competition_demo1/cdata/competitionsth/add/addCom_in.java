@@ -15,7 +15,7 @@ import java.util.Date;
 public class addCom_in {
     private String com_mainname;
     private Integer com_manager;
-    private String com_subname;           //竞赛副标题
+    private String com_num;           //竞赛副标题
     private String com_level;             //级别
     private String com_major;             //专业
     private String com_category;          //竞赛类别
