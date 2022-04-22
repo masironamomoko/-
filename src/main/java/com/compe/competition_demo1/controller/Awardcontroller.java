@@ -2,6 +2,9 @@ package com.compe.competition_demo1.controller;
 
 
 import com.compe.competition_demo1.cdata.award_io.*;
+import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 import com.compe.competition_demo1.service.AwardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,23 +29,18 @@ import java.util.UUID;
 public class Awardcontroller {
     @Autowired
     @Resource private AwardService service;
-    @RequestMapping(value="year")
-    public award_year_out YearAnalysis(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
-        String year = (String)param.get("year");
-        return service.AnalysisYear(year);
+    //竞赛类别获奖分析
+    @RequestMapping(value = "category")
+    public award_category_out awardcate(award_category_in award_category_in, HttpServletResponse response){
+        return service.awardcate(award_category_in);
     }
-    @RequestMapping(value="major")
-    public award_major_out MajorAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
-        return service.AnalysisMajor(awardDateIn);
+
+    //总获奖分析
+    @RequestMapping(value = "all")
+    public award_all_out awardall(HttpServletResponse response){
+        return service.awardall();
     }
-    @RequestMapping(value="category")
-    public award_category_out CategoryAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
-        return service.AnalysisCategory(awardDateIn);
-    }
-    @RequestMapping(value="level")
-    public award_level_out LevelAnalysis(@RequestBody award_date_in awardDateIn)throws SQLException{
-        return service.AnalysisLevel(awardDateIn);
-    }
+
     @RequestMapping(value="add",method=RequestMethod.POST)
     @ResponseBody
     public int add(HttpServletRequest req){

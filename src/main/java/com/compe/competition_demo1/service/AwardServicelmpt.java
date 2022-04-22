@@ -2,262 +2,110 @@ package com.compe.competition_demo1.service;
 
 
 import com.compe.competition_demo1.cdata.award_io.*;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.FileItemFactory;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
+import com.compe.competition_demo1.cdata.award_io.award_all.CateValue;
+import com.compe.competition_demo1.cdata.award_io.award_all.Cateall;
+import com.compe.competition_demo1.cdata.award_io.award_all.LevelValue;
+import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
+import com.compe.competition_demo1.cdata.award_io.award_category.Cate;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import com.compe.competition_demo1.cdata.award_io.award_year_out.*;
-import org.springframework.web.multipart.MultipartFile;
-import java.util.Base64;
+
+import java.util.*;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AwardServicelmpt implements AwardService{
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    //届数获奖分析
     @Override
-    public award_year_out AnalysisYear(String year) {
-        award_year_out YearOut=new award_year_out();
-        major major=YearOut.new major();
-        level level=YearOut.new level();
-        category category=YearOut.new category();
-        String sql="select count(*) from competition where year(sign_up_start)="+year+"";
-        YearOut.setAllc(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where year(date)="+year+"";
-        YearOut.setAllp(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='计算机科学与技术' and year(sign_up_start)="+year+"";
-        major.setMajor1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='物联网' and year(sign_up_start)="+year+"";
-        major.setMajor2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='信息安全技术' and year(sign_up_start)="+year+"";
-        major.setMajor3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='A类' and year(sign_up_start)="+year+"";
-        level.setLevel1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='B类' and year(sign_up_start)="+year+"";
-        level.setLevel1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='C类' and year(sign_up_start)="+year+"";
-        level.setLevel1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='D类' and year(sign_up_start)="+year+"";
-        level.setLevel1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='E类' and year(sign_up_start)="+year+"";
-        level.setLevel1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_category='体育类' and year(sign_up_start)="+year+"";
-        category.setCategory1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_category='艺术类' and year(sign_up_start)="+year+"";
-        category.setCategory2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_category='科技类' and year(sign_up_start)="+year+"";
-        category.setCategory3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_category='电子类' and year(sign_up_start)="+year+"";
-        category.setCategory4(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and year(date)="+year+"";
-        YearOut.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and year(date)="+year+"";
-        YearOut.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and year(date)="+year+"";
-        YearOut.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and year(date)="+year+"";
-        YearOut.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=0 and year(date)="+year+"";
-        YearOut.setAward0(jdbcTemplate.queryForObject(sql,Integer.class));
-        return YearOut;
+    public award_category_out awardcate(award_category_in award_category_in){
+        award_category_out cate_out=new award_category_out();
+        Cate cate = new Cate();
+        String sql2,sql3,sql4;
+        String sql1 = "select c.com_num from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+award_category_in.getCate_name()+"')";
+        List comnum = jdbcTemplate.query(sql1,new BeanPropertyRowMapper<award_category_out>(award_category_out.class));
+        List<Integer> award1 = null,award2 = null,award3 = null;
+        for(int i=0;i<comnum.size();i++) {
+            sql2 = "select award1 from competition where com_num = '"+comnum+"'";
+            Integer sn1 = jdbcTemplate.queryForObject(sql2,Integer.class);
+            award1.add(sn1);
+            sql3 = "select award2 from competition where com_num = '" + comnum + "'";
+            Integer sn2 = jdbcTemplate.queryForObject(sql3,Integer.class);
+            award2.add(sn2);
+            sql4 = "select award3 from competition where com_num = '" + comnum + "'";
+            Integer sn3 = jdbcTemplate.queryForObject(sql4,Integer.class);
+            award3.add(sn3);
+        }
+        cate_out.setCom_mun(comnum);
+        cate.setAward1(award1);
+        cate.setAward2(award2);
+        cate.setAward3(award3);
+        cate_out.setCate(cate);
+        return cate_out;
     }
 
+    //总获奖分析
     @Override
-    public award_major_out AnalysisMajor(award_date_in awardDateIn) {
-        award_major_out awardMajorOut=new award_major_out();
-        award_major_out.major major=awardMajorOut.new major();
-        award_major_out.major.major1 m1=major.new major1();
-        award_major_out.major.major2 m2=major.new major2();
-        award_major_out.major.major3 m3=major.new major3();
-        String sql="select count(*) from competition where sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        awardMajorOut.setAllc(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where date >='"+awardDateIn.getDate1()+"' and date <='"+awardDateIn.getDate2()+"'";
-        awardMajorOut.setAllp(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        m1.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        m2.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        m3.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m1.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m2.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m3.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m1.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m1.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_major='计算机科学与技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m1.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m2.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m2.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_major='物联网' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m2.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m3.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m3.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_major='信息安全技术' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        m3.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        return (awardMajorOut);
-    }
-
-    @Override
-    public award_category_out AnalysisCategory(award_date_in awardDateIn) {
-        award_category_out awardCategoryOut=new award_category_out();
-        award_category_out.category category=awardCategoryOut.new category();
-        award_category_out.category.class1 c1=category.new class1();
-        award_category_out.category.class2 c2=category.new class2();
-        award_category_out.category.class3 c3=category.new class3();
-        award_category_out.category.class4 c4=category.new class4();
-        String sql="select count(*) from competition where sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        awardCategoryOut.setAllc(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where date >='"+awardDateIn.getDate1()+"' and date <='"+awardDateIn.getDate2()+"'";
-        awardCategoryOut.setAllp(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_catagory='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        c1.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_catagory='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        c2.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_catagory='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        c3.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_catagory='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        c4.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_category='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c1.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_category='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c2.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_category='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c3.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_category='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c4.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_category='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_category='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c1.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_category='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c1.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_category='体育类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c1.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_category='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_category='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c2.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_category='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c2.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_category='艺术类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c2.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_category='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_category='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c3.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_category='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c3.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_category='科技类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c3.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_category='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c4.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_category='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c4.setAward2(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_category='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c4.setAward3(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_category='电子类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        c4.setAwardOther(jdbcTemplate.queryForObject(sql,Integer.class));
-        return awardCategoryOut;
-    }
-
-    @Override
-    public award_level_out AnalysisLevel(award_date_in awardDateIn) {
-        award_level_out awardLevelOut=new award_level_out();
-        award_level_out.level level=awardLevelOut.new level();
-        award_level_out.level.level1 l1=level.new level1();
-        award_level_out.level.level2 l2=level.new level2();
-        award_level_out.level.level3 l3=level.new level3();
-        award_level_out.level.level4 l4=level.new level4();
-        award_level_out.level.level5 l5=level.new level5();
-        String sql="select count(*) from competition where sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        awardLevelOut.setAllc(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where date >='"+awardDateIn.getDate1()+"' and date <='"+awardDateIn.getDate2()+"'";
-        awardLevelOut.setAllp(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        l1.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        l2.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        l3.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        l4.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"'";
-        l5.setNum(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l1.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l2.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l3.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l4.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l5.setSign(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l4.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=1 and com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l5.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l4.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=2 and com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l5.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l4.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=3 and com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l5.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='A类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l1.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='B类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l2.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='C类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l3.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='D类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l4.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        sql="select count(*) from registration_management where award=4 and com_id in (select com_id from competition where com_level='E类' and sign_up_start >='"+awardDateIn.getDate1()+"' and sign_up_start <='"+awardDateIn.getDate2()+"')";
-        l5.setAward1(jdbcTemplate.queryForObject(sql,Integer.class));
-        return awardLevelOut;
+    public award_all_out awardall(){
+        //allc
+        award_all_out all_out = new award_all_out();
+        String sql1 = "select count(*) from category";
+        Integer allc = jdbcTemplate.queryForObject(sql1,Integer.class);
+        all_out.setAllc(allc);
+        //cates
+        String sql2 = "select cate_name from category";
+        List catename = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<award_all_out>(award_all_out.class));
+        all_out.setCates(catename);
+        //levels
+        sql2 = "select distinct com_level from competition";
+        List comlevel = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<award_all_out>(award_all_out.class));
+        all_out.setLevels(comlevel);
+        //cate
+        Cateall cateall = new Cateall();
+        List<Integer> num = null,award1 = null,award2 = null,award3 = null;
+        for (int i=0;i<catename.size();i++) {
+            String sql3 = "select count(*) from category where cate_name = '" + catename + "'";
+            Integer num1 = jdbcTemplate.queryForObject(sql3,Integer.class);
+            num.add(num1);
+            String sql4 = "select c.award1 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
+            Integer sn1 = jdbcTemplate.queryForObject(sql4,Integer.class);
+            award1.add(sn1);
+            String sql5 = "select c.award2 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
+            Integer sn2 = jdbcTemplate.queryForObject(sql5,Integer.class);
+            award2.add(sn2);
+            String sql6 = "select c.award3 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
+            Integer sn3 = jdbcTemplate.queryForObject(sql6,Integer.class);
+            award3.add(sn3);
+        }
+        cateall.setNum(num);
+        cateall.setAward1(award1);
+        cateall.setAward2(award2);
+        cateall.setAward3(award3);
+        all_out.setCate((List<Integer>) cateall);
+        //cateValue
+        CateValue cateValue = new CateValue();
+        for (int i=0;i<catename.size();i++) {
+            cateValue.setNum(num.get(i));
+            cateValue.setCate_name((String) catename.get(i));
+        }
+        all_out.setCateValue(Collections.singletonList(cateValue));
+        //levelValue
+        LevelValue levelValue = new LevelValue();
+        for (int i=0;i<comlevel.size();i++) {
+            String sql7 = "select count(*) from competition where com_level = '"+comlevel.get(i)+"'";
+            Integer sn4 = jdbcTemplate.queryForObject(sql7,Integer.class);
+            levelValue.setNum(sn4);
+            levelValue.setCom_level((String) comlevel.get(i));
+        }
+        all_out.setLevelValue(Collections.singletonList(levelValue));
+        return all_out;
     }
 
     @Override

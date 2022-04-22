@@ -13,12 +13,11 @@ import java.util.Date;
 @Accessors(chain = true)    //添加链式调用
 
 public class addCom_in {
-    private String com_mainname;
     private Integer com_manager;
-    private String com_num;           //竞赛副标题
+    private String com_num;               //竞赛届数
     private String com_level;             //级别
     private String com_major;             //专业
-    private String com_category;          //竞赛类别
+    private String cate_name;          //竞赛类别
     private String com_information;
     private Date sign_up_start;         //报名开始时间
     private Date sign_up_end;

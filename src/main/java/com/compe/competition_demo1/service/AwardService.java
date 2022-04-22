@@ -1,14 +1,15 @@
 package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.award_io.*;
+import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
+import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 
 import java.util.List;
 
 public interface AwardService {
-    award_year_out AnalysisYear(String year);
-    award_major_out AnalysisMajor(award_date_in awardDateIn);
-    award_category_out AnalysisCategory(award_date_in awardDateIn);
-    award_level_out AnalysisLevel(award_date_in awardDateIn);
+    award_category_out awardcate(award_category_in award_category_in);//竞赛类别获奖分析
+    award_all_out awardall();//总获奖分析
     int AddAward(award_add_in awardAddIn);
     int DeleteAward(Integer id);
     award_idsearch_out IdSearch(Integer id);
