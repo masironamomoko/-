@@ -1,6 +1,7 @@
 package com.compe.competition_demo1.controller;
 
 import com.compe.competition_demo1.cdata.cate_io.data;
+import com.compe.competition_demo1.cdata.cate_io.recate;
 import com.compe.competition_demo1.service.AwardService;
 import com.compe.competition_demo1.service.CateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,11 @@ public class CategoryController {
         return service.AddCategory(cate_name);
     }
     @RequestMapping(value="findall")
-    public List<data> FindAll(){
+    public List<String> FindAll(){
         return service.FindAll();
+    }
+    @RequestMapping(value="refindall")
+    public List<recate>  ReFindall(){
+        return service.ReFindall();
     }
 }

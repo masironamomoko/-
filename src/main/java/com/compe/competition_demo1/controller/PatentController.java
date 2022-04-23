@@ -1,7 +1,6 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.cdata.patent_io.patent_add_in;
-import com.compe.competition_demo1.cdata.patent_io.patent_idsearch_out;
+import com.compe.competition_demo1.cdata.patent_io.*;
 import com.compe.competition_demo1.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,5 +41,49 @@ public class PatentController {
     public patent_idsearch_out idsearch(@RequestBody Map<String,Object> param){
         Integer id=Integer.parseInt(param.get("patent_id").toString());
         return service.IdSearch(id);
+    }
+    //学生未审核专利
+    @RequestMapping(value="stu_nopass")
+    public List<patent_stunopass_out> pastunopass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException {
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.pastunopass(user_id);
+    }
+    @RequestMapping(value="stu_pass")
+    public List<patent_stupass_out> pastupass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException {
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.pastupass(user_id);
+    }
+    @RequestMapping(value="stu_nonopass")
+    public List<patent_stupass_out> pastunonopass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.pastunonopass(user_id);
+    }
+
+    //竞赛负责人的未审核专利
+    @RequestMapping(value="man_nopass")
+    public List<patent_mannopass_out> pamannopass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.pamannopass(user_id);
+    }
+    @RequestMapping(value="man_pass")
+    public List<patent_manpass_out> pamanpass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException{
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.pamanpass(user_id);
+    }
+
+    //项目管理员的未审核专利
+    @RequestMapping(value = "con_nopass")
+    public List<patent_mannopass_out> paconnopass(HttpServletResponse response){
+        return service.paconnopass();
+    }
+    @RequestMapping(value = "con_pass")
+    public List<patent_manpass_out> paconpass(HttpServletResponse response){
+        return service.paconpass();
+    }
+
+    //审核专利信息
+    @RequestMapping(value = "check")
+    public int pacheck(@RequestBody patent_check_in patent_check_in, HttpServletResponse response){
+        return service.pacheck(patent_check_in);
     }
 }

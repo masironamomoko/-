@@ -1,11 +1,13 @@
 package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.cate_io.data;
+import com.compe.competition_demo1.cdata.cate_io.recate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -26,10 +28,21 @@ public class CateServicelmpt implements CateService{
     }
 
     @Override
-    public List<data> FindAll() {
-        String sql="select * from category";
+    public List<String> FindAll() {
+        String sql="select cate_name from category";
         List<data> data;
         data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data>(data.class));
-        return data;
+        Iterator ite=data.iterator();
+        List<String> datas = null;
+        for(data s:data){
+
+        }
+        return datas;
+    }
+
+    @Override
+    public List<recate> ReFindall() {
+        String sql="select cate_name,cate_name from category";
+        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(recate.class));
     }
 }

@@ -1,8 +1,8 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.patent_io.patent_add_in;
-import com.compe.competition_demo1.cdata.patent_io.patent_idsearch_out;
+import com.compe.competition_demo1.cdata.patent_io.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class PatentServicelmpt implements PatentService{
@@ -119,5 +120,76 @@ public class PatentServicelmpt implements PatentService{
         //进行Base64编码
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(data);
+    }
+
+    //学生的未审核论文
+    @Override
+    public List<patent_stunopass_out> pastunopass(Integer user_id) {
+        List<patent_stunopass_out> pano;
+        String sql2 = "select patent_id,cate_name,com_num,patent_essay,patent_name from (patent p left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.user_id = "+user_id+" and p.patent_check =0";
+        pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_stunopass_out>(patent_stunopass_out.class));
+        return pano;
+    }
+    //审核成功
+    @Override
+    public List<patent_stupass_out> pastupass(Integer user_id) {
+        List<patent_stupass_out> pa;
+        String sql2 = "select patent_id,cate_name,com_num,patent_name,patent_check from (patent p left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.user_id = "+user_id+" and p.patent_check =1";
+        pa = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_stupass_out>(patent_stupass_out.class));
+        return pa;
+    }
+    //审核失败
+    @Override
+    public List<patent_stupass_out> pastunonopass(Integer user_id) {
+        List<patent_stupass_out> pa;
+        String sql2 = "select patent_id,cate_name,com_num,patent_name,patent_check from (patent p left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.user_id = "+user_id+" and p.patent_check =2";
+        pa = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_stupass_out>(patent_stupass_out.class));
+        return pa;
+    }
+
+    //竞赛负责人的未审核论文
+    @Override
+    public List<patent_mannopass_out> pamannopass(Integer user_id) {
+        List<patent_mannopass_out> pano;
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_essay,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = p.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check !=1";
+        pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_mannopass_out>(patent_mannopass_out.class));
+        return pano;
+    }
+
+    @Override
+    public List<patent_manpass_out> pamanpass(Integer user_id) {
+        List<patent_manpass_out> pa;
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_essay,patent_name,patent_check from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check =1";
+        pa = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_manpass_out>(patent_manpass_out.class));
+        return pa;
+    }
+
+    //项目管理员的未审核论文
+    @Override
+    public List<patent_mannopass_out> paconnopass() {
+        List<patent_mannopass_out> pano;
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_essay,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.patent_check !=1";
+        pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_mannopass_out>(patent_mannopass_out.class));
+        return pano;
+    }
+
+    @Override
+    public List<patent_manpass_out> paconpass() {
+        List<patent_manpass_out> pa;
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_essay,patent_name,patent_check from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.patent_check =1";
+        pa = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_manpass_out>(patent_manpass_out.class));
+        return pa;
+    }
+
+    //审核论文信息
+    @Override
+    public int pacheck(patent_check_in patent_check_in) {
+        String sql1 = "update patent set patent_check = ? where patent_id = ?";
+        jdbcTemplate.update(sql1,patent_check_in.getPatent_check(),patent_check_in.getPatent_id());
+        String sql2 = "select count(*) from patent where patent_check ="+patent_check_in.getPatent_check()+" and patent_id ="+patent_check_in.getPatent_id()+"";
+        int count=jdbcTemplate.queryForObject(sql2,Integer.class);
+        if(count!=1)
+            return 700;
+        return 666;
     }
 }

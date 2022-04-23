@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 
 public class award_stunopass_out {
     private Integer award_id;
-    private String com_cate;
+    private String cate_name;
     private String com_num;
     private String award_level;
 }

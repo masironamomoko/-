@@ -66,8 +66,9 @@ public class UserServicelmpt implements UserService {
     @Override
     public chabasic_out changeUser_basic(userChabasic user_chabasic) {
         chabasic_out chb = new chabasic_out();
-        String sql1="update user set user(user_name,user_phone,user_num) values (?,?,?) where user_id ="+user_chabasic.getUser_id()+"";
-        jdbcTemplate.update(sql1,user_chabasic.getUser_name(),user_chabasic.getUser_phone(),user_chabasic.getUser_num());
+        System.out.println(user_chabasic.getUser_name());
+        String sql1="update user set user_name='"+user_chabasic.getUser_name()+"', user_phone="+user_chabasic.getUser_phone()+" where user_id ="+user_chabasic.getUser_id();
+        jdbcTemplate.update(sql1);
         String sql2 = "select count(*) from user where user_name='"+user_chabasic.getUser_name()+"'and user_phone ='"+user_chabasic.getUser_phone()+"'and user_num ='"+user_chabasic.getUser_num()+"'";
         int user = jdbcTemplate.queryForObject(sql2,Integer.class);
         if(user==0)
@@ -81,12 +82,12 @@ public class UserServicelmpt implements UserService {
     @Override
     public chapass_out changeUser_password(userChapass user_chapass){
         chapass_out chp = new chapass_out();
-        String sql1 ="select count(*) from user where user_password ='"+user_chapass.getUser_password_old()+"'and user_id ='"+user_chapass.getUser_id()+"'";
+        String sql1 ="select count(*) from user where user_password ="+user_chapass.getUser_password_old()+" and user_id ="+user_chapass.getUser_id()+"";
         int right = jdbcTemplate.queryForObject(sql1,Integer.class);
         if(right ==1) {
             String sql2 = "update user set user_password =? where user_id =?";
             jdbcTemplate.update(sql2,user_chapass.getUser_password_new(),user_chapass.getUser_id());
-            String sql3 ="select count(*) from user where user_password ='"+user_chapass.getUser_password_new()+"'and user_id ='"+user_chapass.getUser_id()+"'";
+            String sql3 ="select count(*) from user where user_password ="+user_chapass.getUser_password_new()+" and user_id ="+user_chapass.getUser_id()+"";
             int user = jdbcTemplate.queryForObject(sql3,Integer.class);
             if(user==0)
                 chp.setCode(701);

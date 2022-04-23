@@ -1,8 +1,8 @@
 package com.compe.competition_demo1.service;
 
-import com.compe.competition_demo1.cdata.thesis_io.thesis_add_in;
-import com.compe.competition_demo1.cdata.thesis_io.thesis_idsearch_out;
+import com.compe.competition_demo1.cdata.thesis_io.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class ThesisServicelmpt implements ThesisService{
@@ -119,5 +120,75 @@ public class ThesisServicelmpt implements ThesisService{
         //进行Base64编码
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(data);
+    }
+    //学生的未审核论文
+    @Override
+    public List<thesis_stunopass_out> thestunopass(Integer user_id) {
+        List<thesis_stunopass_out> thno;
+        String sql2 = "select thesis_id,cate_name,com_num,thesis_essay,thesis_name from (thesis t left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =0";
+        thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_stunopass_out>(thesis_stunopass_out.class));
+        return thno;
+    }
+    //审核成功
+    @Override
+    public List<thesis_stupass_out> thestupass(Integer user_id) {
+        List<thesis_stupass_out> th;
+        String sql2 = "select thesis_id,cate_name,com_num,thesis_name,thesis_check from (thesis t left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =1";
+        th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_stupass_out>(thesis_stupass_out.class));
+        return th;
+    }
+    //审核失败
+    @Override
+    public List<thesis_stupass_out> thestunonopass(Integer user_id) {
+        List<thesis_stupass_out> th;
+        String sql2 = "select thesis_id,cate_name,com_num,thesis_name,thesis_check from (thesis t left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =2";
+        th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_stupass_out>(thesis_stupass_out.class));
+        return th;
+    }
+
+    //竞赛负责人的未审核论文
+    @Override
+    public List<thesis_mannopass_out> themannopass(Integer user_id) {
+        List<thesis_mannopass_out> thno;
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check !=1";
+        thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
+        return thno;
+    }
+
+    @Override
+    public List<thesis_manpass_out> themanpass(Integer user_id) {
+        List<thesis_manpass_out>th;
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check =1";
+        th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_manpass_out>(thesis_manpass_out.class));
+        return th;
+    }
+
+    //项目管理员的未审核论文
+    @Override
+    public List<thesis_mannopass_out> theconnopass() {
+        List<thesis_mannopass_out> thno;
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check !=1";
+        thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
+        return thno;
+    }
+
+    @Override
+    public List<thesis_manpass_out> theconpass() {
+        List<thesis_manpass_out> th;
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check =1";
+        th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_manpass_out>(thesis_manpass_out.class));
+        return th;
+    }
+
+    //审核论文信息
+    @Override
+    public int thecheck(thesis_check_in thesis_check_in) {
+        String sql1 = "update thesis set thesis_check = ? where thesis_id = ?";
+        jdbcTemplate.update(sql1,thesis_check_in.getThesis_check(),thesis_check_in.getThesis_id());
+        String sql2 = "select count(*) from thesis where thesis_check ="+thesis_check_in.getThesis_check()+" and thesis_id ="+thesis_check_in.getThesis_id()+"";
+        int count=jdbcTemplate.queryForObject(sql2,Integer.class);
+        if(count!=1)
+            return 700;
+        return 666;
     }
 }

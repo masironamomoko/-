@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.service;
 
+import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
@@ -22,6 +23,8 @@ public interface AwardService {
     List<award_manpass_out> awaconpass();
     int awacheck(award_check_in award_check_in);//审核获奖信息
     int StuCount(Integer user_id);
+    int StunoCount(Integer user_id);
     int ManCount(Integer user_id);
     int ConCount();
+    int AddExcel(Award award);
 }

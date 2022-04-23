@@ -1,11 +1,14 @@
 package com.compe.competition_demo1.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 import com.compe.competition_demo1.service.AwardService;
+import com.compe.competition_demo1.util.ReadPatientExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/award")
@@ -106,13 +106,18 @@ public class Awardcontroller {
 
     //审核获奖信息
     @RequestMapping(value = "check")
-    public int awacheck(award_check_in award_check_in,HttpServletResponse response){
+    public int awacheck(@RequestBody award_check_in award_check_in,HttpServletResponse response){
         return service.awacheck(award_check_in);
     }
 
     //学生的未审核获奖个数
     @RequestMapping(value="stu_count")
     public int StuCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StuCount(user_id);
+    }
+    @RequestMapping(value="stu_nocount")
+    public int StunoCount(@RequestBody Map<String,Object> param){
         Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.StuCount(user_id);
     }
@@ -126,5 +131,19 @@ public class Awardcontroller {
     @RequestMapping(value = "con_count")
     public int ConCount(){
         return service.ConCount();
+    }
+    //导入获奖信息
+    @RequestMapping(value="excelExport")
+    public void ExcelIn(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="file",required = false)MultipartFile file){
+        List<String>list=new ArrayList();
+        Map<String,Object> res=new HashMap<>();
+        List<Award> excelInfo= ReadPatientExcelUtil.getExcelInfo(file);
+        for(Award awardInfo : excelInfo){
+            service.AddExcel(awardInfo);
+        }
+        if(list.size()>0){
+            res.put("log",list);
+        }
+        System.out.println(res);
     }
 }

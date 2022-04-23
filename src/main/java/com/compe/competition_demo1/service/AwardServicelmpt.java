@@ -1,6 +1,7 @@
 package com.compe.competition_demo1.service;
 
 
+import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.cdata.award_io.award_all.CateValue;
 import com.compe.competition_demo1.cdata.award_io.award_all.Cateall;
@@ -114,7 +115,7 @@ public class AwardServicelmpt implements AwardService{
         Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
         sql="select count(*) from competition where cate_id="+cate_id+" and com_num='"+awardAddIn.getCom_num()+"'";
         int count1=jdbcTemplate.queryForObject(sql,Integer.class);
-        if(count1!=1)
+        if(count1==0)
             return 702;
         String format = awardAddIn.getCate_name()+awardAddIn.getCom_num()+ awardAddIn.getUser_id();
         // File folder = new File(realPath + format);
@@ -214,6 +215,7 @@ public class AwardServicelmpt implements AwardService{
     }
 
     //学生的未审核获奖
+    @Override
     public List<award_stunopass_out> awastunopass(Integer user_id){
         List<award_stunopass_out> awno;
         String sql2 = "select award_id,cate_name,com_num,award_level from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.user_id = "+user_id+" and a.award_check =0";
@@ -221,6 +223,7 @@ public class AwardServicelmpt implements AwardService{
         return awno;
     }
     //审核成功
+    @Override
     public List<award_stupass_out> awastupass(Integer user_id){
         List<award_stupass_out> aw;
         String sql2 = "select award_id,cate_name,com_num,award_level,award_check from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = "+user_id+" and a.award_check =1";
@@ -228,6 +231,7 @@ public class AwardServicelmpt implements AwardService{
         return aw;
     }
     //审核失败
+    @Override
     public List<award_stupass_out> awastunonopass(Integer user_id){
         List<award_stupass_out> aw;
         String sql2 = "select award_id,cate_name,com_num,award_level,award_check from (award a left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id  where a.user_id = "+user_id+" and a.award_check =2";
@@ -236,6 +240,7 @@ public class AwardServicelmpt implements AwardService{
     }
 
     //竞赛负责人的未审核获奖
+    @Override
     public List<award_mannopass_out> awamannopass(Integer user_id) {
         List<award_mannopass_out> awno;
         String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check !=1";
@@ -243,6 +248,7 @@ public class AwardServicelmpt implements AwardService{
         return awno;
     }
 
+    @Override
     public List<award_manpass_out> awamanpass(Integer user_id) {
         List<award_manpass_out> aw;
         String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check =1";
@@ -251,6 +257,7 @@ public class AwardServicelmpt implements AwardService{
     }
 
     //项目管理员的未审核获奖
+    @Override
     public List<award_mannopass_out> awaconnopass(){
         String sql1 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.award_check !=1";
         int count = jdbcTemplate.queryForObject(sql1,Integer.class);
@@ -261,6 +268,7 @@ public class AwardServicelmpt implements AwardService{
         return null;
     }
 
+    @Override
     public List<award_manpass_out> awaconpass(){
         String sql1 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where a.award_check =1";
         int count = jdbcTemplate.queryForObject(sql1,Integer.class);
@@ -272,6 +280,7 @@ public class AwardServicelmpt implements AwardService{
     }
 
     //审核获奖信息
+    @Override
     public int awacheck(award_check_in award_check_in){
         String sql1 = "update award set award_check = ? where award_id = ?";
         jdbcTemplate.update(sql1,award_check_in.getAward_check(),award_check_in.getAward_id());
@@ -289,6 +298,13 @@ public class AwardServicelmpt implements AwardService{
         count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
     }
+    @Override
+    public int StunoCount(Integer user_id) {
+        int count;
+        String sql="select count(*) from award where user_id="+user_id+" and check=2";
+        count=jdbcTemplate.queryForObject(sql,Integer.class);
+        return count;
+    }
 
     @Override
     public int ManCount(Integer user_id) {
@@ -302,6 +318,18 @@ public class AwardServicelmpt implements AwardService{
         String sql="select count(*) from award where award_check=0";
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
+    }
+
+    @Override
+    public int AddExcel(Award award) {
+        award_add_in awardAddIn=new award_add_in();
+        String sql="select user_id from user where user_num="+award.getUser_num()+"";
+        awardAddIn.setUser_id(jdbcTemplate.queryForObject(sql,Integer.class));
+        awardAddIn.setAward_level(award.getAward_level());
+        awardAddIn.setAward_prove(null);
+        awardAddIn.setCom_num(award.getCom_num());
+        awardAddIn.setCate_name(award.getCate_name());
+        return AddAward(awardAddIn);
     }
 
 }

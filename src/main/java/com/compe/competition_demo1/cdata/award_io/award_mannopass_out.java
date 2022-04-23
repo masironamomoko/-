@@ -15,7 +15,7 @@ public class award_mannopass_out {
     private String user_name;
     private String user_num;
     private String user_phone;
-    private String com_cate;
+    private String cate_name;
     private String com_num;
     private String award_level;
 }
