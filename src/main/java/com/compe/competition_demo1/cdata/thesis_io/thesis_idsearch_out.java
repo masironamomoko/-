@@ -16,5 +16,4 @@ public class thesis_idsearch_out {
     private String user_num;
     private String user_phone;
     private String thesis_name;
-    private String thesis_essay;
 }

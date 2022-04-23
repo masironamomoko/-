@@ -86,4 +86,26 @@ public class PatentController {
     public int pacheck(@RequestBody patent_check_in patent_check_in, HttpServletResponse response){
         return service.pacheck(patent_check_in);
     }
+    //学生的未审核获奖个数
+    @RequestMapping(value="stu_count")
+    public int StuCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StuCount(user_id);
+    }
+    @RequestMapping(value="stu_nocount")
+    public int StunoCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StunoCount(user_id);
+    }
+    //竞赛负责人的未审核获奖个数
+    @RequestMapping(value="man_count")
+    public int ManCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.ManCount(user_id);
+    }
+    //所有的未审核获奖个数
+    @RequestMapping(value = "con_count")
+    public int ConCount(){
+        return service.ConCount();
+    }
 }

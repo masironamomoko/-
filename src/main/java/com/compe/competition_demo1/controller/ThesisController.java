@@ -42,6 +42,11 @@ public class ThesisController {
         Integer id=Integer.parseInt(param.get("thesis_id").toString());
         return service.IdSearch(id);
     }
+    @RequestMapping(value = "essay")
+    public String essay(@RequestBody Map<String,Object> param){
+        Integer id=Integer.parseInt(param.get("thesis_id").toString());
+        return service.essay(id);
+    }
     //学生未审核论文
     @RequestMapping(value="stu_nopass")
     public List<thesis_stunopass_out> thestunopass(@RequestBody Map<String,Object> param, HttpServletResponse response)throws SQLException {
@@ -85,5 +90,27 @@ public class ThesisController {
     @RequestMapping(value = "check")
     public int thecheck(@RequestBody thesis_check_in thesis_check_in, HttpServletResponse response){
         return service.thecheck(thesis_check_in);
+    }
+    //学生的未审核论文个数
+    @RequestMapping(value="stu_count")
+    public int StuCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StuCount(user_id);
+    }
+    @RequestMapping(value="stu_nocount")
+    public int StunoCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.StunoCount(user_id);
+    }
+    //竞赛负责人的未审核获奖个数
+    @RequestMapping(value="man_count")
+    public int ManCount(@RequestBody Map<String,Object> param){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.ManCount(user_id);
+    }
+    //所有的未审核获奖个数
+    @RequestMapping(value = "con_count")
+    public int ConCount(){
+        return service.ConCount();
     }
 }

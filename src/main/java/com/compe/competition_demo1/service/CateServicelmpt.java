@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -32,10 +33,9 @@ public class CateServicelmpt implements CateService{
         String sql="select cate_name from category";
         List<data> data;
         data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data>(data.class));
-        Iterator ite=data.iterator();
-        List<String> datas = null;
-        for(data s:data){
-
+        List<String> datas=new LinkedList<>();
+        for(int i=0;i<data.size();i++){
+            datas.add(data.get(i).getCate_name());
         }
         return datas;
     }

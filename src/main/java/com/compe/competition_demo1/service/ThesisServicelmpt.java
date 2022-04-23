@@ -94,12 +94,17 @@ public class ThesisServicelmpt implements ThesisService{
         thesisIdsearchOut.setUser_phone(jdbcTemplate.queryForObject(sql,String.class));
         sql="select thesis_name from thesis where thesis_id="+id+"";
         thesisIdsearchOut.setThesis_name(jdbcTemplate.queryForObject(sql,String.class));
-        sql="select thesis_essay from thesis where thesis_id="+id+"";
-        String path=jdbcTemplate.queryForObject(sql,String.class);
-        String base=getBaseImg(path);
-        thesisIdsearchOut.setThesis_essay(base);
         return thesisIdsearchOut;
     }
+
+    @Override
+    public String essay(Integer id) {
+        String sql="select thesis_essay from thesis where thesis_id="+id+"";
+        String path=jdbcTemplate.queryForObject(sql,String.class);
+        String base=getBaseImg(path);
+        return base;
+    }
+
     /**
      * 将图片base64转码
      *
@@ -190,5 +195,34 @@ public class ThesisServicelmpt implements ThesisService{
         if(count!=1)
             return 700;
         return 666;
+    }
+
+    @Override
+    public int StuCount(Integer user_id) {
+        int count;
+        String sql="select count(*) from thesis where user_id="+user_id+" and check=0";
+        count=jdbcTemplate.queryForObject(sql,Integer.class);
+        return count;
+    }
+    @Override
+    public int StunoCount(Integer user_id) {
+        int count;
+        String sql="select count(*) from thesis where user_id="+user_id+" and check=2";
+        count=jdbcTemplate.queryForObject(sql,Integer.class);
+        return count;
+    }
+
+    @Override
+    public int ManCount(Integer user_id) {
+        String sql = "select count(*) from ((thesis a left join user u on a.user_id = u.user_id) left join competition c on c.com_id = a.com_id) left join category ca on c.cate_id = ca.cate_id where com_manager = "+user_id+" and a.thesis_check =0";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        return count;
+    }
+
+    @Override
+    public int ConCount() {
+        String sql="select count(*) from thesis where thesis_check=0";
+        int count=jdbcTemplate.queryForObject(sql,Integer.class);
+        return count;
     }
 }

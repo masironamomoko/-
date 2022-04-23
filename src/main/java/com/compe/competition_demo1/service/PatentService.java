@@ -15,5 +15,9 @@ public interface PatentService {
     List<patent_manpass_out> pamanpass(Integer user_id);
     List<patent_mannopass_out> paconnopass();  //项目管理员的未审核专利
     List<patent_manpass_out> paconpass();
+    int StuCount(Integer user_id);
+    int StunoCount(Integer user_id);
+    int ManCount(Integer user_id);
+    int ConCount();
     int pacheck(patent_check_in patent_check_in);  //审核专利信息
 }
