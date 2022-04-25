@@ -3,13 +3,11 @@ package com.compe.competition_demo1.service;
 
 import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
-import com.compe.competition_demo1.cdata.award_io.award_all.CateValue;
-import com.compe.competition_demo1.cdata.award_io.award_all.Cateall;
-import com.compe.competition_demo1.cdata.award_io.award_all.LevelValue;
-import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
+import com.compe.competition_demo1.cdata.award_io.award_all.*;
 import com.compe.competition_demo1.cdata.award_io.award_category.Cate;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
+import com.compe.competition_demo1.cdata.cate_io.data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,21 +28,26 @@ public class AwardServicelmpt implements AwardService{
         award_category_out cate_out=new award_category_out();
         Cate cate = new Cate();
         String sql2,sql3,sql4;
+        List<data1> data1;
         String sql1 = "select c.com_num from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+award_category_in.getCate_name()+"')";
-        List comnum = jdbcTemplate.query(sql1,new BeanPropertyRowMapper<award_category_out>(award_category_out.class));
-        List<Integer> award1 = null,award2 = null,award3 = null;
-        for(int i=0;i<comnum.size();i++) {
-            sql2 = "select award1 from competition where com_num = '"+comnum+"'";
+        data1 = jdbcTemplate.query(sql1,new BeanPropertyRowMapper<data1>(data1.class));
+        List<Integer> award1 = new LinkedList<>(),award2 = new LinkedList<>(),award3 = new LinkedList<>();
+        List<String> datas1 = new LinkedList<>();
+        for (int i=0;i<data1.size();i++){
+            datas1.add(data1.get(i).getCom_num());
+        }
+        for(int i=0;i<datas1.size();i++) {
+            sql2 = "select sum(award1) from competition where com_num = '"+datas1.get(i)+"'";
             Integer sn1 = jdbcTemplate.queryForObject(sql2,Integer.class);
             award1.add(sn1);
-            sql3 = "select award2 from competition where com_num = '" + comnum + "'";
+            sql3 = "select sum(award2) from competition where com_num = '"+datas1.get(i)+"'";
             Integer sn2 = jdbcTemplate.queryForObject(sql3,Integer.class);
             award2.add(sn2);
-            sql4 = "select award3 from competition where com_num = '" + comnum + "'";
+            sql4 = "select sum(award3) from competition where com_num = '"+datas1.get(i)+"'";
             Integer sn3 = jdbcTemplate.queryForObject(sql4,Integer.class);
             award3.add(sn3);
         }
-        cate_out.setCom_mun(comnum);
+        cate_out.setCom_mun(datas1);
         cate.setAward1(award1);
         cate.setAward2(award2);
         cate.setAward3(award3);
@@ -61,28 +64,34 @@ public class AwardServicelmpt implements AwardService{
         Integer allc = jdbcTemplate.queryForObject(sql1,Integer.class);
         all_out.setAllc(allc);
         //cates
-        String sql2 = "select cate_name from category";
-        List catename = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<award_all_out>(award_all_out.class));
-        all_out.setCates(catename);
+        String sql="select cate_name from category";
+        List<data> data;
+        data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data>(data.class));
+        List<String> datas=new LinkedList<>();;
+        for(int i=0;i<data.size();i++){
+            datas.add(data.get(i).getCate_name());
+        }
+        all_out.setCates(datas);
         //levels
-        sql2 = "select distinct com_level from competition";
-        List comlevel = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<award_all_out>(award_all_out.class));
+        String sql2 = "select distinct com_level from competition";
+        List comlevel = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<String>(String.class));
         all_out.setLevels(comlevel);
         //cate
         Cateall cateall = new Cateall();
-        List<Integer> num = null,award1 = null,award2 = null,award3 = null;
-        for (int i=0;i<catename.size();i++) {
-            String sql3 = "select count(*) from category where cate_name = '" + catename + "'";
+        List<Integer> num = new LinkedList<>();
+        List<String>award1 = new LinkedList<>(),award2 = new LinkedList<>(),award3 = new LinkedList<>();
+        for (int i=0;i<datas.size();i++) {
+            String sql3 = "select count(*) from category where cate_name = '"+datas.get(i)+"'";
             Integer num1 = jdbcTemplate.queryForObject(sql3,Integer.class);
             num.add(num1);
-            String sql4 = "select c.award1 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
-            Integer sn1 = jdbcTemplate.queryForObject(sql4,Integer.class);
+            String sql4 = "select sum(c.award1) from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+datas.get(i)+"')" ;
+            String sn1 = jdbcTemplate.queryForObject(sql4,String.class);
             award1.add(sn1);
-            String sql5 = "select c.award2 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
-            Integer sn2 = jdbcTemplate.queryForObject(sql5,Integer.class);
+            String sql5 = "select sum(c.award2) from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+datas.get(i)+"')";
+            String sn2 = jdbcTemplate.queryForObject(sql5,String.class);
             award2.add(sn2);
-            String sql6 = "select c.award3 from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+catename+"')";
-            Integer sn3 = jdbcTemplate.queryForObject(sql6,Integer.class);
+            String sql6 = "select sum(c.award3) from competition c where c.cate_id in (select ca.cate_id from category ca where ca.cate_name = '"+datas.get(i)+"')";
+            String sn3 = jdbcTemplate.queryForObject(sql6,String.class);
             award3.add(sn3);
         }
         cateall.setNum(num);
@@ -92,18 +101,18 @@ public class AwardServicelmpt implements AwardService{
         all_out.setCate((List<Integer>) cateall);
         //cateValue
         CateValue cateValue = new CateValue();
-        for (int i=0;i<catename.size();i++) {
+        for (int i=0;i<datas.size();i++) {
             cateValue.setNum(num.get(i));
-            cateValue.setCate_name((String) catename.get(i));
+            cateValue.setCate_name(datas.get(i));
         }
         all_out.setCateValue(Collections.singletonList(cateValue));
         //levelValue
         LevelValue levelValue = new LevelValue();
-        for (int i=0;i<comlevel.size();i++) {
+        for (int i=0;i<datas.size();i++) {
             String sql7 = "select count(*) from competition where com_level = '"+comlevel.get(i)+"'";
             Integer sn4 = jdbcTemplate.queryForObject(sql7,Integer.class);
             levelValue.setNum(sn4);
-            levelValue.setCom_level((String) comlevel.get(i));
+            levelValue.setCom_level(datas.get(i));
         }
         all_out.setLevelValue(Collections.singletonList(levelValue));
         return all_out;
@@ -316,14 +325,15 @@ public class AwardServicelmpt implements AwardService{
 
     @Override
     public int AddExcel(Award award) {
-        award_add_in awardAddIn=new award_add_in();
         String sql="select user_id from user where user_num="+award.getUser_num()+"";
-        awardAddIn.setUser_id(jdbcTemplate.queryForObject(sql,Integer.class));
-        awardAddIn.setAward_level(award.getAward_level());
-        awardAddIn.setAward_prove(null);
-        awardAddIn.setCom_num(award.getCom_num());
-        awardAddIn.setCate_name(award.getCate_name());
-        return AddAward(awardAddIn);
+        Integer user_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="select cate_id from category where cate_name='"+award.getCate_name()+"'";
+        Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+award.getCom_num()+"'";
+        Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
+        sql="insert into award(award_id,user_id,award_check,award_prove,com_id,award_level) values(null,?,0,null,?,?)";
+        jdbcTemplate.update(sql,user_id,com_id,award.getAward_level());
+        return 666;
     }
 
 }

@@ -87,14 +87,14 @@ public class ReadPatientExcelUtil {
         }
         List<Award> userList = new ArrayList<Award>();
         // 循环Excel行数
-        for (int r = 1; r < totalRows; r++) {
+        for (int r = 0; r < totalRows; r++) {
             Row row = sheet.getRow(r);
             if (row == null){
                 continue;
             }
             Award award = new Award();
             // 循环Excel的列
-            for (int c = 0; c < totalCells-1; c++) {
+            for (int c = 0; c < totalCells; c++) {
                 Cell cell = row.getCell(c);
                 if (null != cell) {
                     if (c == 0) {           //第一列
@@ -114,14 +114,13 @@ public class ReadPatientExcelUtil {
                         if(cell.getCellTypeEnum()  == CellType.NUMERIC){
                             cell.setCellType(CellType.STRING);
                         }
-                        String stringCellValue = cell.getStringCellValue();
-                        award.setCom_num(stringCellValue);
+                        award.setCom_num(cell.getStringCellValue());
                     }
                     else if (c == 3){
                         if(cell.getCellTypeEnum()  == CellType.NUMERIC){
                             cell.setCellType(CellType.STRING);
                         }
-                        award.setAward_level(String.valueOf(cell.getStringCellValue()));
+                        award.setAward_level(cell.getStringCellValue());
                     }
                 }
             }

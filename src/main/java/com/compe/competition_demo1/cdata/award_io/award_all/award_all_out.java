@@ -14,8 +14,8 @@ import java.util.List;
 
 public class award_all_out {
     private Integer allc;//竞赛总数
-    private List<Cates> cates;
-    private List<Levels> levels;
+    private List<String> cates;
+    private List<String> levels;
     private List<Integer> cate;
     private List<CateValue> cateValue;
     private List<LevelValue> levelValue;
