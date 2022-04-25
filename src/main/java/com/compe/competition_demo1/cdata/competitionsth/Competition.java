@@ -22,10 +22,10 @@ public class Competition<String>{
     private Date com_date;
     private String com_mainname;
     private Integer com_manager;          //管理者id
-    private String com_num;           //竞赛副标题
+    private String com_num;             //竞赛副标题
     private String com_level;             //级别
     private String com_major;             //专业
-    private String com_category;          //竞赛类别
+    private String cate_id;            //竞赛类别id
     private String com_information;
     @JSONField(format = "yyyy-MM-dd")
     private Date sign_up_start;         //报名开始时间

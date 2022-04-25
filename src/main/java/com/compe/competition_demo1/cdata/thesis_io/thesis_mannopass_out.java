@@ -17,6 +17,5 @@ public class thesis_mannopass_out {
     private String user_phone;
     private String cate_name;
     private String com_num;
-    private String thesis_essay;
     private String thesis_name;
 }

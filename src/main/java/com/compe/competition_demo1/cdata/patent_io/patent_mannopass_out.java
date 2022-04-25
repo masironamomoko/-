@@ -17,6 +17,5 @@ public class patent_mannopass_out {
     private String user_phone;
     private String cate_name;
     private String com_num;
-    private String patent_prove;
     private String patent_name;
 }

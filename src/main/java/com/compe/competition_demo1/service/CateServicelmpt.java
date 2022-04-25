@@ -42,7 +42,16 @@ public class CateServicelmpt implements CateService{
 
     @Override
     public List<recate> ReFindall() {
-        String sql="select cate_name,cate_name from category";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(recate.class));
+        String sql="select cate_name from category";
+        List<data> data;
+        data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data>(data.class));
+        List<recate> cates=new LinkedList<>();
+        for(int i=0;i<data.size();i++){
+            recate cate=new recate();
+            cate.setText(data.get(i).getCate_name());
+            cate.setValue(data.get(i).getCate_name());
+            cates.add(cate);
+        }
+        return cates;
     }
 }

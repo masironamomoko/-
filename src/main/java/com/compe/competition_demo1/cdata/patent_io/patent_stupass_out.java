@@ -14,7 +14,6 @@ public class patent_stupass_out {
     private Integer patent_id;
     private String cate_name;
     private String com_num;
-    private String patent_prove;
     private String patent_name;
     private Integer patent_check;
 }

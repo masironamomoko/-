@@ -130,7 +130,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_stunopass_out> thestunopass(Integer user_id) {
         List<thesis_stunopass_out> thno;
-        String sql2 = "select thesis_id,cate_name,com_num,thesis_essay,thesis_name from (thesis t left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =0";
+        String sql2 = "select thesis_id,cate_name,com_num,thesis_name from (thesis t left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =0";
         thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_stunopass_out>(thesis_stunopass_out.class));
         return thno;
     }
@@ -155,7 +155,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_mannopass_out> themannopass(Integer user_id) {
         List<thesis_mannopass_out> thno;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check !=1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check !=1";
         thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
         return thno;
     }
@@ -163,7 +163,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_manpass_out> themanpass(Integer user_id) {
         List<thesis_manpass_out>th;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check =1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check =1";
         th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_manpass_out>(thesis_manpass_out.class));
         return th;
     }
@@ -172,7 +172,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_mannopass_out> theconnopass() {
         List<thesis_mannopass_out> thno;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check !=1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check !=1";
         thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
         return thno;
     }
@@ -180,7 +180,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_manpass_out> theconpass() {
         List<thesis_manpass_out> th;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_essay,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check =1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name,thesis_check from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check =1";
         th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_manpass_out>(thesis_manpass_out.class));
         return th;
     }

@@ -14,7 +14,6 @@ public class thesis_stupass_out {
     private Integer thesis_id;
     private String cate_name;
     private String com_num;
-    private String thesis_essay;
     private String thesis_name;
     private Integer thesis_check;
 }
