@@ -1,6 +1,6 @@
 package com.compe.competition_demo1.util;
 
-import com.compe.competition_demo1.cdata.Award;
+import com.compe.competition_demo1.cdata.User;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -8,10 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +15,7 @@ import java.util.List;
  * @author xjt
  * @version 1.0
  */
-public class ReadPatientExcelUtil {
+public class ReadUserExcelUtil {
     //总行数
     private static int totalRows = 0;
     //总条数
@@ -31,7 +27,7 @@ public class ReadPatientExcelUtil {
      * 读EXCEL文件，获取信息集合
      * @return
      */
-    public static List<Award> getExcelInfo(MultipartFile mFile) {
+    public static List<User> getExcelInfo(MultipartFile mFile) {
         String fileName = mFile.getOriginalFilename();//获取文件名
         try {
             if (!validateExcel(fileName)) {// 验证文件名是否合格
@@ -41,7 +37,7 @@ public class ReadPatientExcelUtil {
             if (isExcel2007(fileName)) {
                 isExcel2003 = false;
             }
-            List<Award> userList = createExcel(mFile.getInputStream(), isExcel2003);
+            List<User> userList = createExcel(mFile.getInputStream(), isExcel2003);
             return userList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +51,7 @@ public class ReadPatientExcelUtil {
      * @return
      * @throws IOException
      */
-    public static List<Award> createExcel(InputStream is, boolean isExcel2003) {
+    public static List<User> createExcel(InputStream is, boolean isExcel2003) {
         try{
             Workbook wb = null;
             if (isExcel2003) {// 当excel是2003时,创建excel2003
@@ -63,8 +59,8 @@ public class ReadPatientExcelUtil {
             } else {// 当excel是2007时,创建excel2007
                 wb = new XSSFWorkbook(is);
             }
-            List<Award> awards = readExcelValue(wb);// 读取Excel里面客户的信息
-            return awards;
+            List<User> Users = readExcelValue(wb);// 读取Excel里面客户的信息
+            return Users;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,7 +71,7 @@ public class ReadPatientExcelUtil {
      * @param wb
      * @return
      */
-    private static List<Award> readExcelValue(Workbook wb) {
+    private static List<User> readExcelValue(Workbook wb) {
         //默认会跳过第一行标题
         // 得到第一个shell
         Sheet sheet = wb.getSheetAt(0);
@@ -85,14 +81,14 @@ public class ReadPatientExcelUtil {
         if (totalRows > 1 && sheet.getRow(0) != null) {
             totalCells = sheet.getRow(0).getPhysicalNumberOfCells();
         }
-        List<Award> userList = new ArrayList<Award>();
+        List<User> userList = new ArrayList<User>();
         // 循环Excel行数
-        for (int r = 0; r < totalRows; r++) {
+        for (int r = 1; r < totalRows; r++) {
             Row row = sheet.getRow(r);
             if (row == null){
                 continue;
             }
-            Award award = new Award();
+            User User = new User();
             // 循环Excel的列
             for (int c = 0; c < totalCells; c++) {
                 Cell cell = row.getCell(c);
@@ -102,31 +98,25 @@ public class ReadPatientExcelUtil {
                         if(cell.getCellTypeEnum()  == CellType.NUMERIC){
                             cell.setCellType(CellType.STRING);
                         }
-                        award.setUser_num(cell.getStringCellValue());//将单元格数据赋值给user
+                        User.setUser_name(cell.getStringCellValue());//将单元格数据赋值给user
                     }
                     else if (c == 1){
                         if(cell.getCellTypeEnum()  == CellType.NUMERIC){
                             cell.setCellType(CellType.STRING);
                         }
-                        award.setCate_name(cell.getStringCellValue());
+                        User.setUser_num(cell.getStringCellValue());
                     }
                     else if (c == 2){
                         if(cell.getCellTypeEnum()  == CellType.NUMERIC){
                             cell.setCellType(CellType.STRING);
                         }
-                        award.setCom_num(cell.getStringCellValue());
-                    }
-                    else if (c == 3){
-                        if(cell.getCellTypeEnum()  == CellType.NUMERIC){
-                            cell.setCellType(CellType.STRING);
-                        }
-                        award.setAward_level(cell.getStringCellValue());
+                        User.setUser_phone(cell.getStringCellValue());
                     }
                 }
             }
             //将excel解析出来的数据赋值给对象添加到list中
             // 添加到list
-            userList.add(award);
+            userList.add(User);
         }
         return userList;
     }

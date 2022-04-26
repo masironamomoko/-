@@ -52,8 +52,8 @@ public class UserServicelmpt implements UserService {
         int count=jdbcTemplate.queryForObject(sql,Integer.class);
         if(count!=0)
             return 700;
-        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(3,?,?,null,?,null,null,1)";
-        jdbcTemplate.update(sql,user_re.getUser_name(),user_re.getUser_password(),user_re.getUser_phone());
+        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,?)";
+        jdbcTemplate.update(sql,user_re.getUser_name(),user_re.getUser_password(),user_re.getUser_phone(),user_re.getUser_num());
         sql="select count(*) from user where user_name='"+user_re.getUser_name()+"' and user_phone='"+user_re.getUser_phone()+"'";
         User user = jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<User>(User.class));
         if(user==null)
@@ -61,6 +61,7 @@ public class UserServicelmpt implements UserService {
         else
             return 666;
     }
+
 
     //修改用户基本信息
     @Override
@@ -101,7 +102,8 @@ public class UserServicelmpt implements UserService {
     //管理员批量导入
     @Override
     public void admin_import(User user) {
-
+        String sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,?)";
+        jdbcTemplate.update(sql,user.getUser_name(),user.getUser_num(),user.getUser_phone(),user.getUser_num());
     }
 
     //认证身份

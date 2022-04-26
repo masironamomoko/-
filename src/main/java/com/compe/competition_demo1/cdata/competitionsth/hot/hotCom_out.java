@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.cdata.competitionsth.hot;
 
+import com.compe.competition_demo1.cdata.competitionsth.sthCom;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,5 @@ import java.util.List;
 @Accessors(chain = true)    //添加链式调用
 
 public class hotCom_out {
-    private List<hotCom> data;
+    private List<sthCom> data;
 }

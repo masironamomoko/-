@@ -4,29 +4,33 @@ import com.compe.competition_demo1.cdata.competitionsth.Competition;
 import com.compe.competition_demo1.cdata.competitionsth.cate.cateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.control.controlCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.findall.findallCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.id.idCom;
 import com.compe.competition_demo1.cdata.competitionsth.id.idCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom;
 import com.compe.competition_demo1.cdata.competitionsth.idsign.idsignCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom;
 import com.compe.competition_demo1.cdata.competitionsth.idward.idwardCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.key.keyCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateout;
 import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom;
 import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
+import com.compe.competition_demo1.cdata.competitionsth.stuCom.stuCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.stuCom.stuComcom;
+import com.compe.competition_demo1.cdata.competitionsth.stuCom.stunoCom;
+import com.compe.competition_demo1.cdata.competitionsth.stuCom.stunoCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.year.yearCom;
 import com.compe.competition_demo1.cdata.competitionsth.year.yearCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.year.yearCom_out;
-import com.compe.competition_demo1.service.CompetitionService;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.date.dateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.delete.deleteCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.findall.findallCom_out;
-import com.compe.competition_demo1.cdata.competitionsth.hot.hotCom;
+import com.compe.competition_demo1.cdata.competitionsth.sthCom;
 import com.compe.competition_demo1.cdata.competitionsth.hot.hotCom_out;
-import com.compe.competition_demo1.cdata.competitionsth.key.keyCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.keyCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
@@ -37,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -53,8 +56,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public hotCom_out Comhot() throws SQLException{
         hotCom_out hot = new hotCom_out();
-        String sql = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competition order by com_id desc limit 0,5";
-        hot.setData(jdbcTemplate.query(sql, new BeanPropertyRowMapper<hotCom>(hotCom.class)));
+        String sql = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competition where com_check=1 left join user on com_manager = user_id order by com_id desc limit 0,5";
+        hot.setData(jdbcTemplate.query(sql, new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         return hot;
     }
 
@@ -62,8 +65,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out keyCom(keyCom_in keycom_in)throws SQLException{
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_mainname like '%"+keycom_in.getKey()+"%'  order by com_id desc limit "+(keycom_in.getPageNum()-1)*keycom_in.getPageSize()+","+keycom_in.getPageSize()+"";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        String sql1 = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competiton where com_check=1 left join user on com_manager = user_id where com_mainname like '%"+keycom_in.getKey()+"%'  order by com_id desc limit "+(keycom_in.getPageNum()-1)*keycom_in.getPageSize()+","+keycom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         String sql2 = "select count(*) from competition where com_mainname like'%"+keycom_in.getKey()+"%'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -73,8 +76,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out dateCom(dateCom_in datecom_in) throws SQLException{
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competition where com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end order by com_id desc limit "+(datecom_in.getPageNum()-1)*datecom_in.getPageSize()+","+datecom_in.getPageSize()+"";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        String sql1 = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competition left join user on com_manager = user_id where com_check=1 and com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end order by com_id desc limit "+(datecom_in.getPageNum()-1)*datecom_in.getPageSize()+","+datecom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         String sql2 = "select count(*) from competition where com_date ='"+datecom_in.getDate()+"' between sign_up_start and sign_up_end";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -84,8 +87,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out levelCom(levelCom_in levelcom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_level = '"+levelcom_in.getLevel()+"' order by com_id desc limit "+(levelcom_in.getPageNum()-1)*levelcom_in.getPageSize()+","+levelcom_in.getPageSize()+"";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        String sql1 = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competiton left join user on com_manager = user_id where com_check=1 and com_level = '"+levelcom_in.getLevel()+"' order by com_id desc limit "+(levelcom_in.getPageNum()-1)*levelcom_in.getPageSize()+","+levelcom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         String sql2 = "select count(*) from competition where com_level='"+levelcom_in.getLevel()+"'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -95,8 +98,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out majorCom(majorCom_in majorcom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_major = '"+majorcom_in.getMajor()+"' order by com_id desc limit "+(majorcom_in.getPageNum()-1)*majorcom_in.getPageSize()+","+majorcom_in.getPageSize()+"";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        String sql1 = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competiton left join user on com_manager = user_id where com_check=1 and com_major = '"+majorcom_in.getMajor()+"' order by com_id desc limit "+(majorcom_in.getPageNum()-1)*majorcom_in.getPageSize()+","+majorcom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         String sql2 = "select count(*) from competition where com_major ='"+majorcom_in.getMajor()+"'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -106,8 +109,8 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public keyCom_out cateCom(cateCom_in catecom_in) throws SQLException {
         keyCom_out key = new keyCom_out();
-        String sql1 = "select com_id,com_mainname,com_status,com_manager,sign_up_start,sign_up_end from competiton where com_category = '"+catecom_in.getCategory()+"' order by com_id desc limit "+(catecom_in.getPageNum()-1)*catecom_in.getPageSize()+","+catecom_in.getPageSize()+"";
-        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        String sql1 = "select com_id,com_mainname,com_status,user_name,sign_up_start,sign_up_end from competiton left join user on com_manager = user_id where com_check=1 and com_category = '"+catecom_in.getCategory()+"' order by com_id desc limit "+(catecom_in.getPageNum()-1)*catecom_in.getPageSize()+","+catecom_in.getPageSize()+"";
+        key.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<sthCom>(sthCom.class)));
         String sql2 = "select count(*) from competition where com_category = '"+catecom_in.getCategory()+"'";
         key.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
         return key;
@@ -115,9 +118,9 @@ public class CompetitionServiceImpt implements CompetitionService {
 
     //id查询
     public idCom_out idCom(Integer com_id) throws SQLException {
-        String sql1="select com_id,com_date,user_name,com_manager,com_subname,com_level,com_major,com_category,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,attachment1,attachment2,attachment3,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check from competition c left join user u on c.com_manager = u.user_id where c.com_id="+com_id+"";
+        String sql1="select com_id,com_date,com_mainname,user_name,com_num,com_level,com_major,com_category,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check from competition c left join user u on c.com_manager = u.user_id where c.com_id="+com_id+"";
         idCom_out id =new idCom_out();
-        id.setCompetition(jdbcTemplate.queryForObject(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
+        id.setIdcom(jdbcTemplate.queryForObject(sql1, new BeanPropertyRowMapper<idCom>(idCom.class)));
         String sql2 = "select count(*) from competition where com_id = "+com_id+"";
         int count = jdbcTemplate.queryForObject(sql2,Integer.class);
         if(count!=0)
@@ -130,7 +133,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public findallCom_out findallCom(findallCom_in findallcom_in) throws SQLException{
         findallCom_out fin = new findallCom_out();
-        String sql1 = "select * from competition order by com_date desc limit "+(findallcom_in.getPageNum()-1)*findallcom_in.getPageSize()+","+findallcom_in.getPageSize()+"";
+        String sql1 = "select * from competition where com_check=1 order by com_date desc limit "+(findallcom_in.getPageNum()-1)*findallcom_in.getPageSize()+","+findallcom_in.getPageSize()+"";
         fin.setComList(jdbcTemplate.query(sql1,new BeanPropertyRowMapper<Competition>(Competition.class)));
         String sql2 = "select count(*) from competition";
         fin.setTotal(jdbcTemplate.queryForObject(sql2,Integer.class));
@@ -146,7 +149,7 @@ public class CompetitionServiceImpt implements CompetitionService {
         formatter.format(com_date);
         String sql1 = "insert into competition(com_date,com_mainname,com_manager,com_num,com_level,com_major,cate_name,com_information,sign_up_start,sign_up_end,preliminary_start,preliminary_end,repecharge_start,repecharge_end,finals_start,finals_end,attachment1,attachment2,attachment3,com_status,com_schedule,sign_num,award1,award2,award3,award_other,com_check) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null,null,0,0,0,0,0,0,0,0)";
         jdbcTemplate.update(sql1, com_date,addcom_in.getCom_num()+addcom_in.getCate_name(),addcom_in.getCom_manager(),addcom_in.getCom_num(),addcom_in.getCom_level(),addcom_in.getCom_major(),addcom_in.getCate_name(),addcom_in.getCom_information(),addcom_in.getSign_up_start(),addcom_in.getSign_up_end(),addcom_in.getPreliminary_start(),addcom_in.getPreliminary_end(),addcom_in.getRepecharge_start(),addcom_in.getRepecharge_end(),addcom_in.getFinals_start(),addcom_in.getFinals_end());
-        String sql2 = "select count(*) from competition where cate_name = '"+addcom_in.getCate_name()+"'and com_manager = "+addcom_in.getCom_manager()+"and com_num = '"+addcom_in.getCom_num()+"'";
+        String sql2 = "select count(*) from competition where cate_name = '"+addcom_in.getCate_name()+"' and com_manager = "+addcom_in.getCom_manager()+" and com_num = '"+addcom_in.getCom_num()+"'";
         int count  = jdbcTemplate.queryForObject(sql2,Integer.class);
         if(count==0)
             add.setCode(700);
@@ -174,9 +177,9 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public updateCom_out updateCom(updateCom_in updatecom_in) throws SQLException{
         updateCom_out up = new updateCom_out();
-        String sql1="update competition set com_mainname=?,com_subname=?,com_level=?,com_major=?,com_category=?,com_information=?,sign_up_start=?,sign_up_end=?,preliminary_start=?,preliminary_end=?,repecharge_start=?,repecharge_end=?,finals_start=?,finals_end=? where com_id = ?";
-        jdbcTemplate.update(sql1,updatecom_in.getCom_mainname(),updatecom_in.getCom_subname(),updatecom_in.getCom_level(),updatecom_in.getCom_major(),updatecom_in.getCom_category(),updatecom_in.getCom_information(),updatecom_in.getSign_up_start(),updatecom_in.getSign_up_end(),updatecom_in.getPreliminary_start(),updatecom_in.getPreliminary_end(),updatecom_in.getRepecharge_start(),updatecom_in.getRepecharge_end(),updatecom_in.getFinals_start(),updatecom_in.getFinals_end(),updatecom_in.getCom_id());
-        String sql2 = "select count(*) from competition where com_id = "+updatecom_in.getCom_id()+"and com_mainname='"+updatecom_in.getCom_mainname()+"'";
+        String sql1="update competition set com_num=?,com_level=?,com_major=?,cate_name=?,com_information=?,sign_up_start=?,sign_up_end=?,preliminary_start=?,preliminary_end=?,repecharge_start=?,repecharge_end=?,finals_start=?,finals_end=? where com_id = ?";
+        jdbcTemplate.update(sql1,updatecom_in.getCom_num(),updatecom_in.getCom_level(),updatecom_in.getCom_major(),updatecom_in.getCate_name(),updatecom_in.getCom_information(),updatecom_in.getSign_up_start(),updatecom_in.getSign_up_end(),updatecom_in.getPreliminary_start(),updatecom_in.getPreliminary_end(),updatecom_in.getRepecharge_start(),updatecom_in.getRepecharge_end(),updatecom_in.getFinals_start(),updatecom_in.getFinals_end(),updatecom_in.getCom_id());
+        String sql2 = "select count(*) from competition where com_id = "+updatecom_in.getCom_id()+" and com_num='"+updatecom_in.getCom_num()+"' and cate_name = '"+updatecom_in.getCate_name()+"'";
         int count = jdbcTemplate.queryForObject(sql2,Integer.class);
         if(count==0)
             up.setCode(700);
@@ -198,7 +201,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public idwardCom_out idwardCom(Integer com_id) throws SQLException {
         idwardCom_out idward = new idwardCom_out();
-        String sql="select user_name,user_num,com_id,com_mainname,award from (registration_management r left join user u on r.user_id = u.user_id) left join competition c on r.com_id = c.com_id where com_id="+com_id+"";
+        String sql="select user_name,user_num,com_mainname,award_level from (award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id where a.com_id="+com_id+"";
         idward.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<idwardCom>(idwardCom.class)));
         return idward;
     }
@@ -256,7 +259,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     //用户报名
     @Override
     public int sign(signCom_in signcom_in) throws SQLException{
-        String sql1="update competition_management set com_id=?where user_id=?";
+        String sql1="update competition_management set com_id=? where user_id=?";
         jdbcTemplate.update(sql1,signcom_in.getCom_id(),signcom_in.getUser_id());
         String sql2 = "select count(*) from competition_management where com_id="+signcom_in.getCom_id()+"and user_id="+signcom_in.getUser_id()+"";
         int count = jdbcTemplate.queryForObject(sql2,Integer.class);
@@ -284,14 +287,18 @@ public class CompetitionServiceImpt implements CompetitionService {
 
     //查询学生报名的未完成竞赛
     @Override
-    public List<Competition> stu_nocomplete(int id) throws SQLException {
-        String sql="select com_id,com_date,com_mainname,com_status,com_manager from competition where com_id in (select com_id from registration_management where user_id="+id+") and com_status!=2";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+    public stunoCom_out stu_nocomplete(int user_id) throws SQLException {
+        stunoCom_out stuno = new stunoCom_out();
+        String sql="select com_id,com_date,com_mainname,com_status,user_name from competition c left join user u on c.com_manager = u.user_id where com_id in (select com_id from registration_management where user_id="+user_id+") and com_status!=2";
+        stuno.setStunoCom(jdbcTemplate.query(sql,new BeanPropertyRowMapper<stunoCom>(stunoCom.class)));
+        return stuno;
     }
 
     @Override
-    public List<Competition> stu_complete(int id) throws SQLException {
-        String sql="select com_id,com_date,com_mainname,com_status,com_schedule,com_manager from competition where com_id in(select com_id from registration_management where user_id="+id+") and com_status=2";
-        return jdbcTemplate.query(sql,new BeanPropertyRowMapper<Competition>(Competition.class));
+    public stuCom_out stu_complete(int user_id) throws SQLException {
+        stuCom_out stu = new stuCom_out();
+        String sql="select com_id,com_date,com_mainname,com_status,com_schedule,user_name from competition c left join user u on c.com_manager = u.user_id where com_id in(select com_id from registration_management where user_id= "+user_id+") and com_status=2";
+        stu.setStuComcom(jdbcTemplate.query(sql,new BeanPropertyRowMapper<stuComcom>(stuComcom.class)));
+        return stu;
     }
 }

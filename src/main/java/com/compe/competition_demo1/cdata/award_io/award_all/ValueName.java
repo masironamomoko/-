@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
 
-public class LevelValue {
-    private Integer num;
-    private String com_level;
+public class ValueName {
+    private Integer value;
+    private String name;
 }

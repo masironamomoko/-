@@ -13,7 +13,7 @@ import java.util.List;
 @Accessors(chain = true)
 
 public class Cate{
-    private List<Integer> award1;
-    private List<Integer> award2;
-    private List<Integer> award3;
+    private List<String> award1;
+    private List<String> award2;
+    private List<String> award3;
 }

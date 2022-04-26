@@ -9,7 +9,7 @@ import com.compe.competition_demo1.cdata.award_io.award_category.award_category_
 import java.util.List;
 
 public interface AwardService {
-    award_category_out awardcate(award_category_in award_category_in);//竞赛类别获奖分析
+    award_category_out awardcate(String cate_name);//竞赛类别获奖分析
     award_all_out awardall();//总获奖分析
     int AddAward(award_add_in awardAddIn);
     int DeleteAward(Integer id);

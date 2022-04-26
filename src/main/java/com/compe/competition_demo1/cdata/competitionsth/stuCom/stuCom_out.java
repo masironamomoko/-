@@ -1,4 +1,4 @@
-package com.compe.competition_demo1.cdata.award_io.award_all;
+package com.compe.competition_demo1.cdata.competitionsth.stuCom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
 
-public class Levels {
-    private List<String> com_level;
+public class stuCom_out {
+    private List<stuComcom> stuComcom;
 }

@@ -94,6 +94,10 @@ public class ThesisServicelmpt implements ThesisService{
         thesisIdsearchOut.setUser_phone(jdbcTemplate.queryForObject(sql,String.class));
         sql="select thesis_name from thesis where thesis_id="+id+"";
         thesisIdsearchOut.setThesis_name(jdbcTemplate.queryForObject(sql,String.class));
+        sql="select thesis_essay from thesis where thesis_id="+id+"";
+        String path=jdbcTemplate.queryForObject(sql,String.class);
+        String base=getBaseImg(path);
+        thesisIdsearchOut.setThesis_essay(base);
         return thesisIdsearchOut;
     }
 
@@ -146,7 +150,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_stupass_out> thestunonopass(Integer user_id) {
         List<thesis_stupass_out> th;
-        String sql2 = "select thesis_id,cate_name,com_num,thesis_name,thesis_check from (thesis t left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =2";
+        String sql2 = "select thesis_id,cate_name,com_num,thesis_name,thesis_check from (thesis t left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.user_id = "+user_id+" and t.thesis_check =2";
         th = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_stupass_out>(thesis_stupass_out.class));
         return th;
     }
@@ -155,7 +159,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_mannopass_out> themannopass(Integer user_id) {
         List<thesis_mannopass_out> thno;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check !=1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and t.thesis_check =0";
         thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
         return thno;
     }
@@ -172,7 +176,7 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public List<thesis_mannopass_out> theconnopass() {
         List<thesis_mannopass_out> thno;
-        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check !=1";
+        String sql2 = "select thesis_id,user_name,user_num,user_phone,cate_name,com_num,thesis_name from ((thesis t left join user u on t.user_id = u.user_id) left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where t.thesis_check =0";
         thno = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<thesis_mannopass_out>(thesis_mannopass_out.class));
         return thno;
     }
@@ -200,14 +204,14 @@ public class ThesisServicelmpt implements ThesisService{
     @Override
     public int StuCount(Integer user_id) {
         int count;
-        String sql="select count(*) from thesis where user_id="+user_id+" and check=0";
+        String sql="select count(*) from thesis where user_id="+user_id+" and thesis_check=0";
         count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
     }
     @Override
     public int StunoCount(Integer user_id) {
         int count;
-        String sql="select count(*) from thesis where user_id="+user_id+" and check=2";
+        String sql="select count(*) from thesis where user_id="+user_id+" and thesis_check=2";
         count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
     }

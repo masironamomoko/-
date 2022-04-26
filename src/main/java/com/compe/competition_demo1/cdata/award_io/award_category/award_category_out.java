@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
 public class award_category_out {
-    private List<String> com_mun;
+    private List<String> com_num;
     private Cate cate;
 }

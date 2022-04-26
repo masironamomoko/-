@@ -13,7 +13,6 @@ import lombok.experimental.Accessors;
 public class idwardCom {
     private String user_name;
     private String user_num;
-    private String com_id;
     private String com_mainname;
-    private Integer award;
+    private String award_level;
 }

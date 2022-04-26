@@ -1,14 +1,13 @@
 package com.compe.competition_demo1.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.cdata.award_io.award_all.award_all_out;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 import com.compe.competition_demo1.service.AwardService;
-import com.compe.competition_demo1.util.ReadPatientExcelUtil;
+import com.compe.competition_demo1.util.ReadAwardExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,10 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -31,8 +27,9 @@ public class Awardcontroller {
     @Resource private AwardService service;
     //竞赛类别获奖分析
     @RequestMapping(value = "category")
-    public award_category_out awardcate(award_category_in award_category_in, HttpServletResponse response){
-        return service.awardcate(award_category_in);
+    public award_category_out awardcate(@RequestBody Map<String,Object> param, HttpServletResponse response){
+        String cate_name=param.get("cate_name").toString();
+        return service.awardcate(cate_name);
     }
 
     //总获奖分析
@@ -137,13 +134,12 @@ public class Awardcontroller {
     public void ExcelIn(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="file",required = false)MultipartFile file){
         List<String>list=new ArrayList();
         Map<String,Object> res=new HashMap<>();
-        List<Award> excelInfo= ReadPatientExcelUtil.getExcelInfo(file);
+        List<Award> excelInfo= ReadAwardExcelUtil.getExcelInfo(file);
         for(Award awardInfo : excelInfo){
             service.AddExcel(awardInfo);
         }
         if(list.size()>0){
             res.put("log",list);
         }
-        System.out.println(res);
     }
 }

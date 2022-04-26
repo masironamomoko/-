@@ -4,13 +4,19 @@ import com.compe.competition_demo1.cdata.*;
 import com.compe.competition_demo1.cdata.user_io.identity_out;
 import com.compe.competition_demo1.cdata.user_io.*;
 import com.compe.competition_demo1.service.UserService;
+import com.compe.competition_demo1.util.ReadUserExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -44,8 +50,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "bulkimport")  //管理员批量导入
-    public void admin_import(@RequestBody User user){
-        service.admin_import(user);
+    public void admin_import(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="file",required = false) MultipartFile file){
+        List<String> list=new ArrayList();
+        Map<String,Object> res=new HashMap<>();
+        List<User> excelInfo= ReadUserExcelUtil.getExcelInfo(file);
+        for(User UserInfo : excelInfo){
+            service.admin_import(UserInfo);
+        }
+        if(list.size()>0){
+            res.put("log",list);
+        }
     }
 
     @RequestMapping(value = "identity")  //身份认证

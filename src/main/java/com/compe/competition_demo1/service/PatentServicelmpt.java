@@ -134,7 +134,7 @@ public class PatentServicelmpt implements PatentService{
     @Override
     public List<patent_stupass_out> pastupass(Integer user_id) {
         List<patent_stupass_out> pa;
-        String sql2 = "select patent_id,cate_name,com_num,patent_name,patent_check from (patent p left join competition c on t.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.user_id = "+user_id+" and p.patent_check =1";
+        String sql2 = "select patent_id,cate_name,com_num,patent_name,patent_check from (patent p left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.user_id = "+user_id+" and p.patent_check =1";
         pa = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_stupass_out>(patent_stupass_out.class));
         return pa;
     }
@@ -151,7 +151,7 @@ public class PatentServicelmpt implements PatentService{
     @Override
     public List<patent_mannopass_out> pamannopass(Integer user_id) {
         List<patent_mannopass_out> pano;
-        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = p.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check !=1";
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = p.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check =0";
         pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_mannopass_out>(patent_mannopass_out.class));
         return pano;
     }
@@ -168,7 +168,7 @@ public class PatentServicelmpt implements PatentService{
     @Override
     public List<patent_mannopass_out> paconnopass() {
         List<patent_mannopass_out> pano;
-        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.patent_check !=1";
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where p.patent_check =0";
         pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_mannopass_out>(patent_mannopass_out.class));
         return pano;
     }
@@ -196,14 +196,14 @@ public class PatentServicelmpt implements PatentService{
     @Override
     public int StuCount(Integer user_id) {
         int count;
-        String sql="select count(*) from patent where user_id="+user_id+" and check=0";
+        String sql="select count(*) from patent where user_id="+user_id+" and patent_check=0";
         count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
     }
     @Override
     public int StunoCount(Integer user_id) {
         int count;
-        String sql="select count(*) from patent where user_id="+user_id+" and check=2";
+        String sql="select count(*) from patent where user_id="+user_id+" and patent_check=2";
         count=jdbcTemplate.queryForObject(sql,Integer.class);
         return count;
     }

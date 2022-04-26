@@ -14,11 +14,10 @@ import java.util.Date;
 
 public class updateCom_in {
     private Integer com_id;
-    private String com_mainname;
-    private String com_subname;           //竞赛副标题
+    private String com_num;           //竞赛类别
     private String com_level;             //级别
     private String com_major;             //专业
-    private String com_category;          //竞赛类别
+    private String cate_name;          //竞赛类别
     private String com_information;
     private Date sign_up_start;         //报名开始时间
     private Date sign_up_end;

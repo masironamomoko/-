@@ -1,20 +1,23 @@
-package com.compe.competition_demo1.cdata.thesis_io;
+package com.compe.competition_demo1.cdata.competitionsth.stuCom;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data   //添加getter/setter
 @NoArgsConstructor     //添加无参构造器
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
-public class thesis_idsearch_out {
-    private String cate_name;
-    private String com_num;
+
+public class stunoCom {
+    private Integer com_id;
+    @JSONField(format = "yyyy-MM-dd")
+    private Date com_date;
+    private String com_mainname;
+    private String com_status;
     private String user_name;
-    private String user_num;
-    private String user_phone;
-    private String thesis_name;
-    private String thesis_essay;
 }

@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.util.List;
 
-@Data   //添加getter/setter
+@Data   //添加gettertter
 @NoArgsConstructor     //添加无参构造器
 @AllArgsConstructor     //添加全参构造器
 @Accessors(chain = true)    //添加链式调用
@@ -15,8 +15,7 @@ import java.util.List;
 public class award_all_out {
     private Integer allc;//竞赛总数
     private List<String> cates;
-    private List<String> levels;
-    private List<Integer> cate;
-    private List<CateValue> cateValue;
-    private List<LevelValue> levelValue;
+    private Cateall cate;
+    private List<ValueName> cateValue;
+    private List<ValueName> levelValue;
 }

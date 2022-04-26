@@ -14,4 +14,5 @@ public class userRegister {
     private String user_name;
     private String user_password;
     private String user_phone;
+    private String user_num;
 }
