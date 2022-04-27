@@ -1,6 +1,6 @@
 package com.compe.competition_demo1.cdata.competitionsth.findall;
 
-import com.compe.competition_demo1.cdata.competitionsth.Competition;
+import com.compe.competition_demo1.cdata.competitionsth.sthCom;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ import java.util.List;
 
 public class findallCom_out {
     private Integer total;
-    private List<Competition> comList;
+    private List<sthCom> data;
 }

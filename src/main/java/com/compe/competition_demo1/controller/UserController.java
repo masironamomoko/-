@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "bulkimport")  //管理员批量导入
-    public void admin_import(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="file",required = false) MultipartFile file){
+    public int admin_import(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="file",required = false) MultipartFile file){
         List<String> list=new ArrayList();
         Map<String,Object> res=new HashMap<>();
         List<User> excelInfo= ReadUserExcelUtil.getExcelInfo(file);
@@ -60,6 +60,7 @@ public class UserController {
         if(list.size()>0){
             res.put("log",list);
         }
+        return 666;
     }
 
     @RequestMapping(value = "identity")  //身份认证
@@ -70,4 +71,11 @@ public class UserController {
     public List<User> com(HttpServletResponse response){
         return service.com();
     }
+
+    @RequestMapping(value = "delete")  //用户删除
+    public int deleteuser(@RequestBody Map<String,Object> param,HttpServletResponse response){
+        Integer user_id=Integer.parseInt(param.get("user_id").toString());
+        return service.deleteuser(user_id);
+    }
+
 }

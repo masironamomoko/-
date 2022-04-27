@@ -151,7 +151,7 @@ public class PatentServicelmpt implements PatentService{
     @Override
     public List<patent_mannopass_out> pamannopass(Integer user_id) {
         List<patent_mannopass_out> pano;
-        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on p.com_id = p.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check =0";
+        String sql2 = "select patent_id,user_name,user_num,user_phone,cate_name,com_num,patent_name from ((patent p left join user u on p.user_id = u.user_id) left join competition c on c.com_id = p.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and p.patent_check =0";
         pano = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<patent_mannopass_out>(patent_mannopass_out.class));
         return pano;
     }

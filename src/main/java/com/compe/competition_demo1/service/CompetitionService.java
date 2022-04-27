@@ -20,6 +20,7 @@ import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.reg;
 import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.stuCom.stuCom_out;
@@ -57,4 +58,5 @@ public interface CompetitionService {
     yearCom_out year(yearCom_in yearcom_in)throws SQLException;
     stunoCom_out stu_nocomplete(int user_id)throws SQLException; //查询学生报名的未完成竞赛
     stuCom_out stu_complete(int user_id)throws SQLException;
+    int AddExcel(reg reg)throws SQLException;
 }

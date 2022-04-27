@@ -205,6 +205,8 @@ public class AwardServicelmpt implements AwardService{
         awardIdsearchOut.setAward_level(jdbcTemplate.queryForObject(sql,String.class));
         sql="select award_prove from award where award_id="+id+"";
         String path=jdbcTemplate.queryForObject(sql,String.class);
+        if(path.equals('0'))
+            return awardIdsearchOut;
         String base=getBaseImg(path);
         awardIdsearchOut.setAward_prove(base);
         return awardIdsearchOut;
@@ -295,11 +297,25 @@ public class AwardServicelmpt implements AwardService{
     public int awacheck(award_check_in award_check_in){
         String sql1 = "update award set award_check = ? where award_id = ?";
         jdbcTemplate.update(sql1,award_check_in.getAward_check(),award_check_in.getAward_id());
-        String sql2 = "select count(*) from award where award_check = "+award_check_in.getAward_check()+" and award_id = '"+award_check_in.getAward_id()+"'";
+        String sql2 = "select count(*) from award where award_check = "+award_check_in.getAward_check()+" and award_id = "+award_check_in.getAward_id()+"";
         int count=jdbcTemplate.queryForObject(sql2,Integer.class);
-        if(count!=1)
-            return 700;
-        return 666;
+        String sql5 = null;
+        if(count==1){
+            String sql3 = "select award_level from award where award_id = "+award_check_in.getAward_id()+"";
+            String level = jdbcTemplate.queryForObject(sql3, new BeanPropertyRowMapper<String>(String.class));
+            String sql4 = "select com_id from award where award_id = "+award_check_in.getAward_id()+"";
+            Integer comid = jdbcTemplate.queryForObject(sql4, Integer.class);
+            if(level == "一等奖") {
+                sql5 = "update competition set award1 = award1 + 1 where com_id = "+comid+"";
+            }
+            else if (level == "二等奖")
+                sql5 = "update competition set award2 = award2 + 1 where com_id = "+comid+"";
+            else if (level == "三等奖")
+                sql5 = "update competition set award3 = award3 + 1 where com_id = "+comid+"";
+            jdbcTemplate.update(sql5);
+            return 666;
+        }
+        return 700;
     }
 
     @Override
@@ -339,7 +355,11 @@ public class AwardServicelmpt implements AwardService{
         Integer cate_id=jdbcTemplate.queryForObject(sql,Integer.class);
         sql="select com_id from competition where cate_id='"+cate_id+"' and com_num='"+award.getCom_num()+"'";
         Integer com_id=jdbcTemplate.queryForObject(sql,Integer.class);
-        sql="insert into award(award_id,user_id,award_check,award_prove,com_id,award_level) values(null,?,0,null,?,?)";
+        sql="select count(*) from award where user_id="+user_id+" and com_id="+com_id;
+        Integer count=jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count!=0)
+            return 700;
+        sql="insert into award(award_id,user_id,award_check,award_prove,com_id,award_level) values(null,?,0,0,?,?)";
         jdbcTemplate.update(sql,user_id,com_id,award.getAward_level());
         return 666;
     }

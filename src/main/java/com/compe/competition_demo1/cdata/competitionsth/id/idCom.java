@@ -22,7 +22,7 @@ public class idCom {
     private String com_num;           //竞赛副标题
     private String com_level;             //级别
     private String com_major;             //专业
-    private String com_category;          //竞赛类别
+    private String cate_name;          //竞赛类别
     private String com_information;
     @JSONField(format = "yyyy-MM-dd")
     private Date sign_up_start;         //报名开始时间

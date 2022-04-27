@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.controller;
 
+import com.compe.competition_demo1.cdata.User;
 import com.compe.competition_demo1.cdata.competitionsth.Competition;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
@@ -20,6 +21,7 @@ import com.compe.competition_demo1.cdata.competitionsth.level.levelCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.major.majorCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.middate.middateCom_out;
+import com.compe.competition_demo1.cdata.competitionsth.reg;
 import com.compe.competition_demo1.cdata.competitionsth.searchpass.searchpassCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.sign.signCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.stuCom.stuCom_out;
@@ -27,14 +29,21 @@ import com.compe.competition_demo1.cdata.competitionsth.stuCom.stunoCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_out;
 import com.compe.competition_demo1.service.CompetitionService;
+import com.compe.competition_demo1.util.ReadRegExcelUtil;
+import com.compe.competition_demo1.util.ReadUserExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,5 +188,20 @@ public class CompetitionController {
     public stuCom_out stu_complete(@RequestBody Map<String,Object> param)throws SQLException{
         Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.stu_complete(user_id);
+    }
+    @RequestMapping(value="excelExport")
+    public int ExcelIn(@RequestBody Map<String,Object> param, @RequestParam(value="file",required = false) MultipartFile file) throws SQLException {
+        Integer com_id= Integer.parseInt(param.toString());
+        List<String> list=new ArrayList();
+        Map<String,Object> res=new HashMap<>();
+        List<reg> excelInfo= ReadRegExcelUtil.getExcelInfo(file);
+        for(reg RegInfo : excelInfo){
+            RegInfo.setCom_id(com_id);
+            service.AddExcel(RegInfo);
+        }
+        if(list.size()>0){
+            res.put("log",list);
+        }
+        return 666;
     }
 }

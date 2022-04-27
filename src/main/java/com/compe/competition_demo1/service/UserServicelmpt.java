@@ -101,9 +101,13 @@ public class UserServicelmpt implements UserService {
 
     //管理员批量导入
     @Override
-    public void admin_import(User user) {
-        String sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,?)";
+    public int admin_import(User user) {
+        String sql="select count(*) from user where user_num='"+user.getUser_num()+"'";
+        if(jdbcTemplate.queryForObject(sql,Integer.class)!=0)
+            return 700;
+        sql="insert into user(user_identity,user_name,user_password,user_email,user_phone,user_id,user_picture,user_num) values(2,?,?,null,?,null,null,?)";
         jdbcTemplate.update(sql,user.getUser_name(),user.getUser_num(),user.getUser_phone(),user.getUser_num());
+        return 666;
     }
 
     //认证身份
@@ -126,4 +130,17 @@ public class UserServicelmpt implements UserService {
         String sql="select user_id,user_name,user_phone,user_num,user_identity from user";
         return jdbcTemplate.query(sql,new BeanPropertyRowMapper<User>(User.class));
     }
+
+    //用户删除
+    @Override
+    public int deleteuser(Integer user_id){
+        String sql1 = "delete * from user where user_id = "+user_id+"";
+        jdbcTemplate.update(sql1);
+        String sql2 = "select count(*) from user where user_id = "+user_id+"";
+        int count = jdbcTemplate.queryForObject(sql2,Integer.class);
+        if(count==0)
+            return 666;
+        return 700;
+    }
+
 }

@@ -76,6 +76,7 @@ public class PatentController {
     public List<patent_mannopass_out> paconnopass(HttpServletResponse response){
         return service.paconnopass();
     }
+
     @RequestMapping(value = "con_pass")
     public List<patent_manpass_out> paconpass(HttpServletResponse response){
         return service.paconpass();
