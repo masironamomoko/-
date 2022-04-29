@@ -19,4 +19,5 @@ public class award_manpass_out {
     private String com_num;
     private String award_level;
     private Integer award_check;
+    private String com_year;
 }

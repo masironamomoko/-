@@ -48,5 +48,5 @@ public class idCom {
     private Integer award3;
     private Integer award_other;
     private Integer com_check;          //审核结果
-    private Integer com_year;
+    private String com_year;
 }

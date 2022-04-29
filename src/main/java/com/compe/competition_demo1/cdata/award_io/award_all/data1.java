@@ -11,5 +11,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)    //添加链式调用
 
 public class data1 {
-    private String com_num;
+    private String data;
 }

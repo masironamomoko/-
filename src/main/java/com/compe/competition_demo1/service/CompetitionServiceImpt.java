@@ -215,7 +215,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public searchpassCom_out SearchConnopass() throws SQLException {
         searchpassCom_out pass = new searchpassCom_out();
-        String sql="select com_id,com_date,com_mainname,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where c.com_check=0";
+        String sql="select com_id,com_date,com_mainname,user_name,com_year,com_status from competition c left join user u on c.com_manager = u.user_id where c.com_check=0";
         pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class)));
         return pass;
     }
@@ -224,7 +224,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public searchpassCom_out SearchConpass() throws SQLException {
         searchpassCom_out pass = new searchpassCom_out();
-        String sql="select com_id,com_date,com_mainname,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where c.com_check!=0";
+        String sql="select com_id,com_date,com_mainname,user_name,com_year,com_status from competition c left join user u on c.com_manager = u.user_id where c.com_check!=0";
         pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class)));
         return pass;
     }
@@ -245,7 +245,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public searchpassCom_out searchNoPass(Integer user_id) throws SQLException {
         searchpassCom_out pass = new searchpassCom_out();
-        String sql="select com_id,com_date,com_mainname,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where com_check=0 and com_manager =?";
+        String sql="select com_id,com_date,com_mainname,user_name,com_year,com_check,com_status from competition c left join user u on c.com_manager = u.user_id where com_manager =?";
         pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class),user_id));
         return pass;
     }
@@ -254,7 +254,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public searchpassCom_out searchPass(Integer user_id) throws SQLException {
         searchpassCom_out pass = new searchpassCom_out();
-        String sql="select com_id,com_date,com_mainname,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where com_check!=0 and com_manager=?";
+        String sql="select com_id,com_date,com_mainname,user_name,com_year,com_status from competition c left join user u on c.com_manager = u.user_id where com_check!=0 and com_manager=?";
         pass.setData(jdbcTemplate.query(sql,new BeanPropertyRowMapper<searchpassCom>(searchpassCom.class),user_id));
         return pass;
     }
@@ -305,7 +305,7 @@ public class CompetitionServiceImpt implements CompetitionService {
     @Override
     public stunoCom_out stu_nocomplete(int user_id) throws SQLException {
         stunoCom_out stuno = new stunoCom_out();
-        String sql="select com_id,com_date,com_mainname,com_status,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where com_id in (select com_id from registration_management where user_id="+user_id+") and com_status!=2";
+        String sql="select com_id,com_date,com_mainname,com_status,user_name,com_year from competition c left join user u on c.com_manager = u.user_id where com_id in (select com_id from registration_management where user_id="+user_id+")";
         stuno.setStunoCom(jdbcTemplate.query(sql,new BeanPropertyRowMapper<stunoCom>(stunoCom.class)));
         return stuno;
     }

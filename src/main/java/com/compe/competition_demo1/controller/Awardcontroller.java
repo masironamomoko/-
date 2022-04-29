@@ -34,8 +34,9 @@ public class Awardcontroller {
 
     //总获奖分析
     @RequestMapping(value = "all")
-    public award_all_out awardall(HttpServletResponse response){
-        return service.awardall();
+    public award_all_out awardall(@RequestBody Map<String,Object> param){
+        String com_year=param.get("com_year").toString();
+        return service.awardall(com_year);
     }
 
     @RequestMapping(value="add",method=RequestMethod.POST)

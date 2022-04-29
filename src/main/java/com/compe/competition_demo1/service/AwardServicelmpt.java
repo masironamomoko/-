@@ -5,10 +5,8 @@ import com.compe.competition_demo1.cdata.Award;
 import com.compe.competition_demo1.cdata.award_io.*;
 import com.compe.competition_demo1.cdata.award_io.award_all.*;
 import com.compe.competition_demo1.cdata.award_io.award_category.Cate;
-import com.compe.competition_demo1.cdata.award_io.award_category.award_category_in;
 import com.compe.competition_demo1.cdata.award_io.award_category.award_category_out;
 import com.compe.competition_demo1.cdata.award_io.award_category.num;
-import com.compe.competition_demo1.cdata.cate_io.data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,69 +23,46 @@ public class AwardServicelmpt implements AwardService{
 
     //总获奖分析
     @Override
-    public award_all_out awardall(){
+    public award_all_out awardall(String com_year){
         award_all_out out=new award_all_out();
-        String sql="select cate_name from category";
-        List<data> data;
-        data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data>(data.class));
-        List<String> cates=new LinkedList<>();
+        String sql="select com_mainname from competition where com_year="+com_year;
+        List<data1> data;
+        data=jdbcTemplate.query(sql,new BeanPropertyRowMapper<data1>(data1.class));
+        List<String> com_mainname=new LinkedList<>();
         for(int i=0;i<data.size();i++){
-            cates.add(data.get(i).getCate_name());
+            com_mainname.add(data.get(i).getData());
         }
-        out.setCates(cates);
-        sql="select count(*) from competition";
-        Integer allc=jdbcTemplate.queryForObject(sql,Integer.class);
-        out.setAllc(allc);
-        List<ValueName> cateValue=new LinkedList<>();
-        for(int i=0;i<cates.size();i++){
-            sql="SELECT count(*) from competition where cate_id=(SELECT cate_id from category where cate_name='"+cates.get(i)+"')";
-            Integer value=jdbcTemplate.queryForObject(sql,Integer.class);
-            ValueName valueName=new ValueName();
-            valueName.setValue(value);
-            valueName.setName(cates.get(i));
-            cateValue.add(valueName);
+        out.setComList(com_mainname);
+        List<awardValue> awardValue=new LinkedList<>();
+        for(int i=0;i<com_mainname.size();i++){
+            sql="select award1+award2+award3 from competition where com_mainname="+com_mainname.get(i);
+            data1 value=jdbcTemplate.queryForObject(sql,data1.class);
+            Integer count=Integer.parseInt(value.getData());
+            awardValue valueName=new awardValue();
+            valueName.setValue(count);
+            valueName.setName(com_mainname.get(i));
+            awardValue.add(valueName);
         }
-        out.setCateValue(cateValue);
-        List<ValueName> levelValue=new LinkedList<>();
-        List<String> levels=new LinkedList<>();
-        levels.add("A类");
-        levels.add("B类");
-        levels.add("C类");
-        levels.add("D类");
-        levels.add("E类");
-        for(int i=0;i<levels.size();i++){
-            sql="SELECT count(*) from competition where com_level='"+levels.get(i)+"'";
-            Integer value=jdbcTemplate.queryForObject(sql,Integer.class);
-            ValueName valueName=new ValueName();
-            valueName.setValue(value);
-            valueName.setName(levels.get(i));
-            levelValue.add(valueName);
-        }
-        out.setLevelValue(levelValue);
-        Cateall cateall=new Cateall();
-        List<Integer> num=new LinkedList<>();
+        out.setAwardValue(awardValue);
+        comData comData=new comData();
         List<String> award1=new LinkedList<>();
         List<String> award2=new LinkedList<>();
         List<String> award3=new LinkedList<>();
-        for(int i=0;i<cates.size();i++){
-            sql="SELECT count(*) from competition where cate_id=(SELECT cate_id from category where cate_name='"+cates.get(i)+"')";
-            Integer value=jdbcTemplate.queryForObject(sql,Integer.class);
-            num.add(value);
-            sql="SELECT sum(award1) from competition where cate_id=(SELECT cate_id from category where cate_name='"+cates.get(i)+"')";
+        for(int i=0;i<com_mainname.size();i++){
+            sql="select award1 from competition where com_mainname="+com_mainname.get(i);
             String a1=jdbcTemplate.queryForObject(sql,String.class);
             award1.add(a1);
-            sql="SELECT sum(award2) from competition where cate_id=(SELECT cate_id from category where cate_name='"+cates.get(i)+"')";
+            sql="select award2 from competition where com_mainname='"+com_mainname.get(i)+"')";
             String a2=jdbcTemplate.queryForObject(sql,String.class);
             award2.add(a2);
-            sql="SELECT sum(award3) from competition where cate_id=(SELECT cate_id from category where cate_name='"+cates.get(i)+"')";
+            sql="select award3 from competition where com_mainname='"+com_mainname.get(i)+"')";
             String a3=jdbcTemplate.queryForObject(sql,String.class);
             award3.add(a3);
         }
-        cateall.setNum(num);
-        cateall.setAward1(award1);
-        cateall.setAward2(award2);
-        cateall.setAward3(award3);
-        out.setCate(cateall);
+        comData.setAward1(award1);
+        comData.setAward2(award2);
+        comData.setAward3(award3);
+        out.setComData(comData);
         return out;
     }
 
@@ -273,7 +248,7 @@ public class AwardServicelmpt implements AwardService{
     @Override
     public List<award_manpass_out> awamanpass(Integer user_id) {
         List<award_manpass_out> aw;
-        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check =1";
+        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check,com_year from ((award a left join user u on a.user_id = u.user_id) left join competition c on a.com_id = c.com_id) left join category ca on c.cate_id = ca.cate_id where c.com_manager = "+user_id+" and a.award_check =1";
         aw = jdbcTemplate.query(sql2, new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
         return aw;
     }
@@ -290,7 +265,7 @@ public class AwardServicelmpt implements AwardService{
     @Override
     public List<award_manpass_out> awaconpass(){
         List<award_manpass_out> aw;
-        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check from ((award a left join user u on a.user_id = u.user_id) left join competition c on c.com_id = a.com_id) left join category ca on c.cate_id = ca.cate_id where a.award_check =1";
+        String sql2 = "select award_id,user_name,user_num,user_phone,cate_name,com_num,award_level,award_check,com_year from ((award a left join user u on a.user_id = u.user_id) left join competition c on c.com_id = a.com_id) left join category ca on c.cate_id = ca.cate_id where a.award_check =1";
         aw = jdbcTemplate.query(sql2,new BeanPropertyRowMapper<award_manpass_out>(award_manpass_out.class));
         return aw;
     }

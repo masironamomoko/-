@@ -18,5 +18,7 @@ public class searchpassCom {
     private Date com_date;
     private String com_mainname;
     private String user_name;
-    private Integer com_year;
+    private String com_year;
+    private Integer com_check;
+    private Integer com_status;
 }

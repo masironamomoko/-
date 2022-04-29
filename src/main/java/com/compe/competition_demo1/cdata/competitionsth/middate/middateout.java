@@ -20,5 +20,5 @@ public class middateout {
     private String com_level;
     private String com_category;
     private String com_major;
-    private Integer com_year;
+    private String com_year;
 }

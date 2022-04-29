@@ -18,8 +18,8 @@ public class stuComcom {
     @JSONField(format = "yyyy-MM-dd")
     private Date com_date;
     private String com_mainname;
-    private String com_status;
+    private Integer com_status;
     private String com_schedule;
     private String user_name;
-    private Integer com_year;
+    private String com_year;
 }

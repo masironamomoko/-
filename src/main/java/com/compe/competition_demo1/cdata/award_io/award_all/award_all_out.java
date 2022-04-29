@@ -13,9 +13,7 @@ import java.util.List;
 @Accessors(chain = true)    //添加链式调用
 
 public class award_all_out {
-    private Integer allc;//竞赛总数
-    private List<String> cates;
-    private Cateall cate;
-    private List<ValueName> cateValue;
-    private List<ValueName> levelValue;
+    private List<String> comList;
+    private comData comData;
+    private List<awardValue> awardValue;
 }
