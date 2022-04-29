@@ -52,6 +52,6 @@ public class Competition<String>{
     private Integer award1;             //一等奖人数
     private Integer award2;
     private Integer award3;
-    private Integer award_other;
+    private Integer com_year;           //赛事年份
     private Integer com_check;          //审核结果
 }

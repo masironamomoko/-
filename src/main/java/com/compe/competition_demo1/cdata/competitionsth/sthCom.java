@@ -21,4 +21,5 @@ public class sthCom {
     private Date sign_up_start;
     @JSONField(format = "yyyy-MM-dd")
     private Date sign_up_end;
+    private Integer com_year;
 }

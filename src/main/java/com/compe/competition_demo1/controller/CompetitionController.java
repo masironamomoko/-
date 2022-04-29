@@ -1,7 +1,5 @@
 package com.compe.competition_demo1.controller;
 
-import com.compe.competition_demo1.cdata.User;
-import com.compe.competition_demo1.cdata.competitionsth.Competition;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.add.addCom_out;
 import com.compe.competition_demo1.cdata.competitionsth.cate.cateCom_in;
@@ -30,13 +28,12 @@ import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_in;
 import com.compe.competition_demo1.cdata.competitionsth.update.updateCom_out;
 import com.compe.competition_demo1.service.CompetitionService;
 import com.compe.competition_demo1.util.ReadRegExcelUtil;
-import com.compe.competition_demo1.util.ReadUserExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -128,7 +125,7 @@ public class CompetitionController {
     }
 
     //用竞赛id查询获奖信息
-    @RequestMapping(value = "idward")
+    @RequestMapping(value = "idaward")
     public idwardCom_out idwardCom(@RequestBody Map<String,Object> param, HttpServletResponse response) throws SQLException{
         Integer com_id=Integer.parseInt(param.get("com_id").toString());
         return service.idwardCom(com_id);
@@ -166,7 +163,6 @@ public class CompetitionController {
         return service.searchPass(user_id);
     }
 
-    //批量导入报名信息
 
     //用户报名
     @RequestMapping(value = "sign")
@@ -189,14 +185,18 @@ public class CompetitionController {
         Integer user_id=Integer.parseInt(param.get("user_id").toString());
         return service.stu_complete(user_id);
     }
-    @RequestMapping(value="excelExport")
-    public int ExcelIn(@RequestBody Map<String,Object> param, @RequestParam(value="file",required = false) MultipartFile file) throws SQLException {
-        Integer com_id= Integer.parseInt(param.toString());
+    //批量导入报名信息
+    @RequestMapping(value="signall")
+    public int ExcelIn(HttpServletRequest req) throws SQLException {
+        MultipartHttpServletRequest params=((MultipartHttpServletRequest) req);
+        MultipartFile file=((MultipartHttpServletRequest) req).getFile("file");
+        Integer com_id= Integer.valueOf(params.getParameter("com_id"));
         List<String> list=new ArrayList();
         Map<String,Object> res=new HashMap<>();
         List<reg> excelInfo= ReadRegExcelUtil.getExcelInfo(file);
         for(reg RegInfo : excelInfo){
             RegInfo.setCom_id(com_id);
+            System.out.println(RegInfo);
             service.AddExcel(RegInfo);
         }
         if(list.size()>0){
@@ -204,4 +204,7 @@ public class CompetitionController {
         }
         return 666;
     }
+    //返回所有未审核竞赛的个数
+    @RequestMapping(value="passcom")
+    public int PassCom() throws SQLException {return service.PassCom();}
 }

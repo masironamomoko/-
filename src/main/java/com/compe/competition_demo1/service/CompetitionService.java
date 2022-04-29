@@ -59,4 +59,5 @@ public interface CompetitionService {
     stunoCom_out stu_nocomplete(int user_id)throws SQLException; //查询学生报名的未完成竞赛
     stuCom_out stu_complete(int user_id)throws SQLException;
     int AddExcel(reg reg)throws SQLException;
+    int PassCom()throws SQLException;
 }

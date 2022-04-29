@@ -20,4 +20,5 @@ public class stunoCom {
     private String com_mainname;
     private String com_status;
     private String user_name;
+    private Integer com_year;
 }

@@ -1,5 +1,6 @@
 package com.compe.competition_demo1.service;
 
+import com.compe.competition_demo1.cdata.cate_io.cate_find_out;
 import com.compe.competition_demo1.cdata.cate_io.data;
 import com.compe.competition_demo1.cdata.cate_io.recate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,23 @@ public class CateServicelmpt implements CateService{
             cates.add(cate);
         }
         return cates;
+    }
+
+    @Override
+    public List<cate_find_out> Find() {
+        List<cate_find_out> cateFindOut;
+        String sql="select cate_id,cate_name from category";
+        cateFindOut=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(cate_find_out.class));
+        return cateFindOut;
+    }
+
+    @Override
+    public int Delete(Integer cate_id) {
+        String sql="delete from category where cate_id="+cate_id;
+        jdbcTemplate.update(sql);
+        sql="select count(*) from category where cate_id="+cate_id;
+        if(jdbcTemplate.queryForObject(sql,Integer.class)!=0)
+            return 700;
+        return 666;
     }
 }

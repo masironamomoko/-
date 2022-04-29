@@ -21,4 +21,5 @@ public class stuComcom {
     private String com_status;
     private String com_schedule;
     private String user_name;
+    private Integer com_year;
 }

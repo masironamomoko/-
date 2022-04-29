@@ -27,4 +27,5 @@ public class addCom_in {
     private Date repecharge_end;
     private Date finals_start;          //决赛开始时间
     private Date finals_end;
+    private Integer com_year;
 }

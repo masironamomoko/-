@@ -12,5 +12,5 @@ import lombok.experimental.Accessors;
 
 public class controlCom_in {
     private Integer com_id;
-    private Integer com_check;
+    private Integer check;
 }
